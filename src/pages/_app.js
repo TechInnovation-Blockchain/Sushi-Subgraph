@@ -1,38 +1,33 @@
 import "../styles/index.css";
 import "../styles/itb.css";
 
-import * as gtag from '../core/analytics'
+import * as gtag from "../core/analytics";
 
-import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import { useReactiveVar } from "@apollo/client";
 import React, { useEffect } from "react";
 import {
-  StylesProvider,
   ThemeProvider,
-  createGenerateClassName,
 } from "@material-ui/core/styles";
-import { darkModeVar, useApollo } from "app/core";
+import { darkModeVar } from "app/core";
 import { darkTheme, lightTheme } from "../theme";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Head from "next/head";
 import fontTheme from "../styles/font";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 // import {useLoaded} from "hooks/useLoaded";
 
 function MyApp({ Component, pageProps }) {
-  const client = useApollo(pageProps.initialApolloState);
-  // const loaded = useLoaded();
-
-  const router = useRouter()
+  const router = useRouter();
   useEffect(() => {
     const handleRouteChange = (url) => {
-      gtag.pageview(url)
-    }
-    router.events.on('routeChangeComplete', handleRouteChange)
+      gtag.pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -49,9 +44,10 @@ function MyApp({ Component, pageProps }) {
 
   const darkMode = useReactiveVar(darkModeVar);
 
-  const theme = React.useMemo(() => (darkMode ? darkTheme : lightTheme), [
-    darkMode,
-  ]);
+  const theme = React.useMemo(
+    () => (darkMode ? darkTheme : lightTheme),
+    [darkMode]
+  );
 
   return (
     <>
@@ -62,22 +58,14 @@ function MyApp({ Component, pageProps }) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <ApolloProvider client={client}>
-        <ThemeProvider
-          theme={{
-            ...theme,
-            // props: {
-            //   // Change the default options of useMediaQuery
-            //   MuiUseMediaQuery: { ssrMatchMedia },
-            // },
-          }}
-        >
-          <CssBaseline />
-          <Component {...pageProps} />
-          {/* { process.browser ? <Component {...pageProps} /> : null} */}
-          {/* {localCondition && loaded && <Component {...pageProps} />} */}
-        </ThemeProvider>
-      </ApolloProvider>
+      <ThemeProvider
+        theme={{
+          ...theme,
+        }}
+      >
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
       <style jsx global>
         {fontTheme}
       </style>

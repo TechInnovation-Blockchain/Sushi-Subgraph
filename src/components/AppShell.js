@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import AppBar from "./AppBar";
-import AppFooter from "./AppFooter";
 import AppNavigation from "./AppNavigation";
 import AppSidebar from "./AppSidebar";
 import clsx from "clsx";
@@ -14,17 +13,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
-  // drawer: {
-  //   [theme.breakpoints.up("sm")]: {
-  //     width: drawerWidth,
-  //     flexShrink: 0,
-  //   },
-  // },
-  // drawerPaper: {
-  //   background: "transparent",
-  //   width: drawerWidth,
-  //   border: 0,
-  // },
 
   hide: {
     display: "none",
@@ -133,7 +121,6 @@ function AppShell(props) {
             }}
           >
             <AppSidebar sidebarOptions={sidebarOptions} setSidebarOptions={setSidebarOptions} />
-            {/* <AppNavigation /> */}
           </Drawer>
         </Hidden>
       </nav>
@@ -144,7 +131,6 @@ function AppShell(props) {
       >
         <div className={classes.toolbar} />
         <Container maxWidth="xl">{children}</Container>
-        {/* <AppFooter /> */}
       </main>
     </div>
   );

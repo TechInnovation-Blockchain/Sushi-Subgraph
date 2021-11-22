@@ -1,63 +1,15 @@
-import { SELECTED_ADDRESS } from "config";
-import * as React from "react";
+import React from "react";
 import {
   AreaChart,
   Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  // XAxis,
+  // YAxis,
+  // CartesianGrid,
   Legend,
   Tooltip,
-  LabelList,
-  Label,
 } from "recharts";
 
-const data = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 1000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
-
-export default function NewGraph({ sidebarOptions, allData }) {
+export default function NewGraph({ sidebarOptions, allData, width, height }) {
   const [updatedData, setUpdatedData] = React.useState(allData);
   React.useEffect(() => setUpdatedData(allData), [allData]);
 
@@ -97,7 +49,7 @@ export default function NewGraph({ sidebarOptions, allData }) {
     polygon: item.liquidityETH / 10,
   }));
   const harmony = updatedData["harmony"]?.map((item) => ({
-    harmony: item.liquidityETH,
+    harmony: item.liquidityETH / 100000,
   }));
   const celo = updatedData["celo"]?.map((item) => ({
     celo: item.liquidityETH / 1000,
@@ -108,16 +60,6 @@ export default function NewGraph({ sidebarOptions, allData }) {
   const arbitrum = updatedData["arbitrum"]?.map((item) => ({
     arbitrum: item.liquidityETH / 10,
   }));
-
-  // console.log("ethereum", ethereum);
-  // console.log("bsc", bsc);
-  // console.log("moonriver", moonriver);
-  // console.log("xdai", xdai);
-  // console.log("polygon", polygon);
-  // console.log("harmony", harmony);
-  // console.log("celo", celo);
-  // console.log("fantom", fantom);
-  // console.log("arbitrum", arbitrum);
 
   const length = [
     ethereum.length,
@@ -149,25 +91,21 @@ export default function NewGraph({ sidebarOptions, allData }) {
   console.log("sidebarOptions", sidebarOptions);
 
   return (
-    <>
+    <div>
       <AreaChart
-        width={500}
-        height={400}
+        width={width || 600}
+        height={height || 400}
         // data={data}
         data={finalData}
         // data={updatedData}
         margin={{
           top: 10,
-          right: 30,
+          right: 0,
           left: 0,
           bottom: 0,
         }}
       >
-        {/* <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis /> */}
         <Tooltip />
-        {/* <Legend /> */}
         <Legend verticalAlign="top" height={36} />
         {sidebarOptions.ethereum && (
           <Area
@@ -252,24 +190,12 @@ export default function NewGraph({ sidebarOptions, allData }) {
         )}
 
         {/* <Area
-        type={cardinal}
-        dataKey="pv"
-        stroke="#82ca9d"
-        fill="#82ca9d"
-        fillOpacity={0.3}
-      /> */}
-        {/* {finalData?.map((item, index) => {
-        return (
-          <Area
-            key={index}
-            type="monotone"
-            dataKey={item}
-            stroke="#82ca9d"
-            fill="#82ca9d"
-            fillOpacity={0.3}
-          />
-        )
-      })} */}
+          type={cardinal}
+          dataKey="pv"
+          stroke="#82ca9d"
+          fill="#82ca9d"
+          fillOpacity={0.3}
+        /> */}
       </AreaChart>
 
       <style>{`
@@ -284,6 +210,6 @@ export default function NewGraph({ sidebarOptions, allData }) {
       //   left: -12rem;
       // }
     `}</style>
-    </>
+    </div>
   );
 }
