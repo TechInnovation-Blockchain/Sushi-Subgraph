@@ -1,11 +1,7 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import { Grid, Paper } from "@material-ui/core";
-import {
-  AppShell,
-  AreaChart,
-  BarChart,
-} from "app/components";
+import { AppShell, AreaChart, BarChart } from "app/components";
 
 import { ParentSize } from "@visx/responsive";
 import NewGraph0 from "components/_newGraph0";
@@ -25,6 +21,7 @@ import {
 import { customDayDatasQuery } from "../apollo/queries";
 
 function IndexPage() {
+  const [loading, setLoading] = useState(false);
   const [sidebarOptions, setSidebarOptions] = React.useState({
     ethereum: true,
     bsc: false,
@@ -49,6 +46,7 @@ function IndexPage() {
   });
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       const ethereum_res = await ethereum_client.query({
         query: customDayDatasQuery,
@@ -86,7 +84,8 @@ function IndexPage() {
       });
     };
     fetchData();
-    }, []);
+    setLoading(false);
+  }, []);
 
   return (
     <AppShell
@@ -97,24 +96,27 @@ function IndexPage() {
         <title>Dashboard | Crypto Analytics</title>
       </Head>
 
-      {allData.ethereum !== null && (
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={6}>
-            <Paper variant="outlined" style={{ height: 350 }}>
-              <ParentSize>
-                {({ width, height }) => (
-                  <NewGraph0
-                    width={width}
-                    height={height}
-                    sidebarOptions={sidebarOptions}
-                    allData={allData}
-                    overlayEnabled
-                  />
-                )}
-              </ParentSize>
-            </Paper>
-          </Grid>
-          {/* <Grid item xs={12} sm={12} md={6}>
+      {loading ? (
+        <div style={{backgroundColor: 'red', color: 'white'}}>Loading...</div>
+      ) : (
+        allData.ethereum !== null && (
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={6}>
+              <Paper variant="outlined" style={{ height: 350 }}>
+                <ParentSize>
+                  {({ width, height }) => (
+                    <NewGraph0
+                      width={width}
+                      height={height}
+                      sidebarOptions={sidebarOptions}
+                      allData={allData}
+                      overlayEnabled
+                    />
+                  )}
+                </ParentSize>
+              </Paper>
+            </Grid>
+            {/* <Grid item xs={12} sm={12} md={6}>
             <Paper variant="outlined" style={{ height: 350 }}>
               <ParentSize>
                 {({ width, height }) => (
@@ -128,19 +130,17 @@ function IndexPage() {
               </ParentSize>
             </Paper>
           </Grid> */}
-          <Grid item xs={12} sm={12} md={6}>
-            <Paper variant="outlined" style={{ height: 350 }}>
-              <ParentSize>
-                {({ width, height }) => (
-                  <NewGraph3
-                    width={width}
-                    height={height}
-                  />
-                )}
-              </ParentSize>
-            </Paper>
+            <Grid item xs={12} sm={12} md={6}>
+              <Paper variant="outlined" style={{ height: 350 }}>
+                <ParentSize>
+                  {({ width, height }) => (
+                    <NewGraph3 width={width} height={height} />
+                  )}
+                </ParentSize>
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
+        )
       )}
     </AppShell>
   );

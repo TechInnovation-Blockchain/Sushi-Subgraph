@@ -8,6 +8,7 @@ import React, { useEffect } from "react";
 import {
   ThemeProvider,
 } from "@material-ui/core/styles";
+// import { darkModeVar } from "app/core";
 import { darkModeVar } from "app/core";
 import { darkTheme, lightTheme } from "../theme";
 

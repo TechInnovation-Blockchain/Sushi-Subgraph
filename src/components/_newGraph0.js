@@ -11,7 +11,8 @@ import {
   Tooltip,
 } from "recharts";
 // import { timeFormat, timeParse } from "d3-time-format";
-import {oneMonth, oneWeek} from "app/utils";
+// import {oneMonth, oneWeek} from "app/utils";
+import {oneMonth, oneWeek} from "../core/timestamps";
 
 const useStyles = makeStyles((theme) => ({
   filter: {
