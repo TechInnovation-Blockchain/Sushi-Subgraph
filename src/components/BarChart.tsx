@@ -17,7 +17,7 @@ import {
   useTooltipInPortal,
 } from "@visx/tooltip";
 import { bisector, extent, max } from "d3-array";
-import { currencyFormatter, oneMonth, oneWeek } from "app/core";
+import { currencyFormatter, oneMonth, oneWeek } from "../core";
 import letterFrequency, {
   LetterFrequency,
 } from "@visx/mock-data/lib/mocks/letterFrequency";

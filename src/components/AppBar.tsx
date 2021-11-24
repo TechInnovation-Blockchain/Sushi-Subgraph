@@ -20,7 +20,7 @@ import {
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import clsx from "clsx";
-import { darkModeVar } from "app/core";
+import { darkModeVar } from "../core";
 import useDetect from "../core/hooks/useDetect";
 import { useReactiveVar } from "@apollo/client";
 import { useRouter } from "next/router";

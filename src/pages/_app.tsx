@@ -1,5 +1,6 @@
 import "../styles/index.css";
 import "../styles/itb.css";
+import type { AppProps } from 'next/app'
 
 import * as gtag from "../core/analytics";
 
@@ -8,8 +9,7 @@ import React, { useEffect } from "react";
 import {
   ThemeProvider,
 } from "@material-ui/core/styles";
-// import { darkModeVar } from "app/core";
-import { darkModeVar } from "app/core";
+import { darkModeVar } from "../core";
 import { darkTheme, lightTheme } from "../theme";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -18,7 +18,7 @@ import fontTheme from "../styles/font";
 import { useRouter } from "next/router";
 // import {useLoaded} from "hooks/useLoaded";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   useEffect(() => {
     const handleRouteChange = (url) => {

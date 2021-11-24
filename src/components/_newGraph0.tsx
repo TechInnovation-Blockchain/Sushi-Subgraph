@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from "recharts";
 // import { timeFormat, timeParse } from "d3-time-format";
-// import {oneMonth, oneWeek} from "app/utils";
 import {oneMonth, oneWeek} from "../core/timestamps";
 
 const useStyles = makeStyles((theme) => ({
@@ -222,8 +221,6 @@ export default function NewGraph2({ sidebarOptions, allData, width, height }) {
           left: 0,
           bottom: 0,
         }}
-        tooltipDisabled
-        overlayEnabled
       >
         <defs>
           <linearGradient id="colorEthereum" x1="0" y1="0" x2="0" y2="1">

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import AppBar from "./AppBar";
-import AppNavigation from "./AppNavigation";
 import AppSidebar from "./AppSidebar";
 import clsx from "clsx";
 
@@ -92,7 +91,7 @@ function AppShell(props) {
       />
       <nav className={classes.drawer} aria-label="navigation">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden smUp implementation="js">
+        {/* <Hidden smUp implementation="js">
           <Drawer
             container={container}
             variant="temporary"
@@ -108,7 +107,7 @@ function AppShell(props) {
           >
             <AppNavigation />
           </Drawer>
-        </Hidden>
+        </Hidden> */}
         <Hidden xsDown implementation="css">
           <Drawer
             className={classes.drawer}

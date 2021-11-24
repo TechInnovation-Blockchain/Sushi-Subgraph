@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import { Grid, Paper } from "@material-ui/core";
-import { AppShell, AreaChart, BarChart } from "app/components";
+import { AppShell, AreaChart, BarChart, Loading } from "../components";
 
 import { ParentSize } from "@visx/responsive";
 import NewGraph0 from "components/_newGraph0";
@@ -22,7 +22,7 @@ import { customDayDatasQuery } from "../apollo/queries";
 
 function IndexPage() {
   const [loading, setLoading] = useState(false);
-  const [sidebarOptions, setSidebarOptions] = React.useState({
+  const [sidebarOptions, setSidebarOptions] = useState({
     ethereum: true,
     bsc: false,
     moonriver: false,
@@ -82,10 +82,11 @@ function IndexPage() {
         fantom: fantom_res.data.dayDatas,
         arbitrum: arbitrum_res.data.dayDatas,
       });
+      setLoading(false);
     };
     fetchData();
-    setLoading(false);
   }, []);
+
 
   return (
     <AppShell
@@ -97,9 +98,9 @@ function IndexPage() {
       </Head>
 
       {loading ? (
-        <div style={{backgroundColor: 'red', color: 'white'}}>Loading...</div>
+        <Loading />
       ) : (
-        allData.ethereum !== null && (
+        allData?.ethereum !== null && (
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={6}>
               <Paper variant="outlined" style={{ height: 350 }}>
@@ -110,26 +111,11 @@ function IndexPage() {
                       height={height}
                       sidebarOptions={sidebarOptions}
                       allData={allData}
-                      overlayEnabled
                     />
                   )}
                 </ParentSize>
               </Paper>
             </Grid>
-            {/* <Grid item xs={12} sm={12} md={6}>
-            <Paper variant="outlined" style={{ height: 350 }}>
-              <ParentSize>
-                {({ width, height }) => (
-                  <NewGraph
-                    width={width}
-                    height={height}
-                    sidebarOptions={sidebarOptions}
-                    allData={allData}
-                  />
-                )}
-              </ParentSize>
-            </Paper>
-          </Grid> */}
             <Grid item xs={12} sm={12} md={6}>
               <Paper variant="outlined" style={{ height: 350 }}>
                 <ParentSize>
@@ -145,26 +131,5 @@ function IndexPage() {
     </AppShell>
   );
 }
-
-// export async function getStaticProps() {
-//   const client = getApollo();
-
-//   await getDayData(client);
-//   await getEthPrice(client);
-//   await getOneDayEthPrice(client);
-//   await getSevenDayEthPrice(client);
-//   await getTokens(client);
-//   await getPairs(client);
-//   await getPools(client);
-
-//   console.log("client.cache.extract()", client.cache.extract());
-
-//   return {
-//     props: {
-//       initialApolloState: client.cache.extract(),
-//     },
-//     revalidate: 1,
-//   };
-// }
 
 export default IndexPage;
