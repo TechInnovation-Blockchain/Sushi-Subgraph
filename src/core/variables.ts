@@ -6,7 +6,8 @@ const getDarkModeVar = () => {
 
     // Set dark mode by default
     if (isDarkMode === null) {
-      document.documentElement.classList.add(["dark-theme"]);
+      // document.documentElement.classList.add(["dark-theme"]);
+      document.documentElement.classList.add("dark-theme");
       document.documentElement.style.color = "#FFFFFF";
       localStorage.setItem("darkMode", "true")
       return true;

@@ -24,7 +24,7 @@ export default function Loading() {
     <div>
       <Grid
         container
-        justify="center"
+        justifyContent="center"
         alignContent="center"
         direction="column"
         className={classes.container}

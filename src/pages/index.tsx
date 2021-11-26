@@ -1,12 +1,11 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import { Grid, Paper } from "@material-ui/core";
-import { AppShell, AreaChart, BarChart, Loading } from "../components";
-
+import { AppShell, Loading } from "../components";
 import { ParentSize } from "@visx/responsive";
-import NewGraph0 from "components/_newGraph0";
-import NewGraph from "components/_newGraph";
-import NewGraph3 from "components/_newGraph3";
+import LiquidityChart from "components/LiquidityChart";
+import VolumeChart from "components/VolumeChart";
+
 import {
   ethereum_client,
   bsc_client,
@@ -106,7 +105,7 @@ function IndexPage() {
               <Paper variant="outlined" style={{ height: 350 }}>
                 <ParentSize>
                   {({ width, height }) => (
-                    <NewGraph0
+                    <LiquidityChart
                       width={width}
                       height={height}
                       sidebarOptions={sidebarOptions}
@@ -120,7 +119,8 @@ function IndexPage() {
               <Paper variant="outlined" style={{ height: 350 }}>
                 <ParentSize>
                   {({ width, height }) => (
-                    <NewGraph3 width={width} height={height} />
+                    <VolumeChart width={width} height={height} sidebarOptions={sidebarOptions}
+                    allData={allData} />
                   )}
                 </ParentSize>
               </Paper>

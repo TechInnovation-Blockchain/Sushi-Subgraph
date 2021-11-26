@@ -1,30 +1,67 @@
+import React from "react";
 import {
   Button,
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import React from "react";
 import {
   AreaChart,
   Area,
   Legend,
   Tooltip,
 } from "recharts";
-// import { timeFormat, timeParse } from "d3-time-format";
 import {oneMonth, oneWeek} from "../core/timestamps";
+import { timeFormat } from "d3-time-format";
 
 const useStyles = makeStyles((theme) => ({
   filter: {
     display: "flex",
-    flexDirection: "column",
+    // flexDirection: "column",
     [theme.breakpoints.up("md")]: {
       flexDirection: "row",
     },
   },
 }));
 
-export default function NewGraph2({ sidebarOptions, allData, width, height }) {
+const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
+  const [state, setState] = React.useState([]);
+
+  React.useEffect(() => {
+    if (active && payload && payload.length) {
+      const hoverItem = payload.map((item) => ({
+        name: item.name,
+        date: item.payload[`${item.name}_date`],
+        value: item.value,
+      }));
+      // console.log("hover data", hoverItem);
+      setState(hoverItem);
+      setHoveredData(hoverItem);
+    }
+  }, [label]);
+
+  if (active && payload && payload.length) {
+    return (
+      <div style={{ background: 'gray', padding: '15px', borderRadius: '20px' }}>
+        {/* <p>{getDate(state[0]?.date)}</p> */}
+        {state &&
+          state.map((item, index) => (
+            <p key={index} style={{margin: '5px 0'}}>
+              {item.name}: {item.value}
+            </p>
+          ))}
+      </div>
+    );
+  }
+
+  return null;
+};
+
+const formatDate = timeFormat("%b %d, '%y");
+const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
+
+export default function LiquidityChart({ sidebarOptions, allData, width, height }) {
   const classes = useStyles();
+  const [hoveredData, setHoveredData] = React.useState([]);
   const [updatedData, setUpdatedData] = React.useState(allData);
   React.useEffect(() => setUpdatedData(allData), [allData]);
 
@@ -46,48 +83,37 @@ export default function NewGraph2({ sidebarOptions, allData, width, height }) {
     );
   }
 
-  const modifyItem = (selectedItem, divider) => {
+  // const modifyItem = (selectedItem, divider) => {
+  //   return updatedData[selectedItem]?.map((item) => ({
+  //     [selectedItem]: Number(item.liquidityETH / divider).toFixed(2),
+  //   }));
+  // };
+  const modifyItem = (selectedItem) => {
     return updatedData[selectedItem]?.map((item) => ({
-      [selectedItem]: item.liquidityETH / divider,
+      // [selectedItem]: Number(item.liquidityETH).toFixed(2),
+      [selectedItem]: Number(item.liquidityUSD).toFixed(2),
+      [`${selectedItem}_date`]: item.date,
     }));
   };
 
-  // const ethereum = updatedData["ethereum"]?.map((item) => ({
-  //   ethereum: item.liquidityETH / 100,
-  // }));
-  const ethereum = modifyItem("ethereum", 100);
-  const bsc = modifyItem("bsc", 1);
-  const moonriver = modifyItem("moonriver", 1);
-  const xdai = modifyItem("xdai", 1000);
-  const polygon = modifyItem("polygon", 10);
-  const harmony = modifyItem("harmony", 100000);
-  const celo = modifyItem("celo", 1000);
-  const fantom = modifyItem("fantom", 1000);
-  const arbitrum = modifyItem("arbitrum", 10);
-  // const bsc = updatedData["bsc"]?.map((item) => ({
-  //   bsc: item.liquidityETH / 1,
-  // }));
-  // const moonriver = updatedData["moonriver"]?.map((item) => ({
-  //   moonriver: item.liquidityETH,
-  // }));
-  // const xdai = updatedData["xdai"]?.map((item) => ({
-  //   xdai: item.liquidityETH / 1000,
-  // }));
-  // const polygon = updatedData["polygon"]?.map((item) => ({
-  //   polygon: item.liquidityETH / 10,
-  // }));
-  // const harmony = updatedData["harmony"]?.map((item) => ({
-  //   harmony: item.liquidityETH / 100000,
-  // }));
-  // const celo = updatedData["celo"]?.map((item) => ({
-  //   celo: item.liquidityETH / 1000,
-  // }));
-  // const fantom = updatedData["fantom"]?.map((item) => ({
-  //   fantom: item.liquidityETH / 1000,
-  // }));
-  // const arbitrum = updatedData["arbitrum"]?.map((item) => ({
-  //   arbitrum: item.liquidityETH / 10,
-  // }));
+  // const ethereum = modifyItem("ethereum", 100);
+  // const bsc = modifyItem("bsc", 1);
+  // const moonriver = modifyItem("moonriver", 1);
+  // const xdai = modifyItem("xdai", 1000);
+  // const polygon = modifyItem("polygon", 10);
+  // const harmony = modifyItem("harmony", 100000);
+  // const celo = modifyItem("celo", 1000);
+  // const fantom = modifyItem("fantom", 1000);
+  // const arbitrum = modifyItem("arbitrum", 10);
+  const ethereum = modifyItem("ethereum");
+  const bsc = modifyItem("bsc");
+  const moonriver = modifyItem("moonriver");
+  const xdai = modifyItem("xdai");
+  const polygon = modifyItem("polygon");
+  const harmony = modifyItem("harmony");
+  const celo = modifyItem("celo");
+  const fantom = modifyItem("fantom");
+  const arbitrum = modifyItem("arbitrum");
 
   const length = [
     ethereum.length,
@@ -113,6 +139,16 @@ export default function NewGraph2({ sidebarOptions, allData, width, height }) {
     celo: Number(celo[k]?.celo) || 0,
     fantom: Number(fantom[k]?.fantom) || 0,
     arbitrum: Number(arbitrum[k]?.arbitrum) || 0,
+
+    ethereum_date: ethereum[k]?.ethereum_date || "",
+    bsc_date: bsc[k]?.bsc_date || "",
+    moonriver_date: moonriver[k]?.moonriver_date || "",
+    xdai_date: xdai[k]?.xdai_date || "",
+    polygon_date: polygon[k]?.polygon_date || "",
+    harmony_date: harmony[k]?.harmony_date || "",
+    celo_date: celo[k]?.celo_date || "",
+    fantom_date: fantom[k]?.fantom_date || "",
+    arbitrum_date: arbitrum[k]?.arbitrum_date || "",
   }));
 
   const [timespan, setTimespan] = React.useState(oneMonth());
@@ -161,12 +197,11 @@ export default function NewGraph2({ sidebarOptions, allData, width, height }) {
           <Typography variant="subtitle2" color="textSecondary">
             Liquidity
           </Typography>
-          <Typography variant="h5" color="textPrimary">
+          {/* <Typography variant="h5" color="textPrimary">
             $4,319,493,164.81
-          </Typography>
+          </Typography> */}
           <Typography variant="subtitle1" color="textSecondary">
-            {/* {formatDate(date * 1e3)} */}
-            Nov 21, '21
+          {hoveredData[0] ? getDate(hoveredData[0]?.date) : ''}
           </Typography>
         </aside>
 
@@ -260,7 +295,16 @@ export default function NewGraph2({ sidebarOptions, allData, width, height }) {
             <stop offset="100%" stopColor="#bdbdbd" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <Tooltip />
+        <Tooltip
+          content={
+            <CustomTooltip
+              setHoveredData={setHoveredData}
+              active={undefined}
+              payload={undefined}
+              label={undefined}
+            />
+          }
+        />
         <Legend verticalAlign="top" height={36} />
         {sidebarOptions.ethereum && (
           <Area
@@ -343,28 +387,7 @@ export default function NewGraph2({ sidebarOptions, allData, width, height }) {
             fillOpacity={1}
           />
         )}
-
-        {/* <Area
-          type={cardinal}
-          dataKey="pv"
-          stroke="#82ca9d"
-          fill="#82ca9d"
-          fillOpacity={1}
-        /> */}
       </AreaChart>
-
-      <style>{`
-      // .recharts-wrapper {
-      //   position: relative;
-      // }
-      
-      // .recharts-default-legend {
-      //   /* position: absolute; */
-      //   position: relative;
-      //   top: -24rem;
-      //   left: -12rem;
-      // }
-    `}</style>
     </div>
   );
 }

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
     flexGrow: 1,
     // margin: "0 auto",
     justifyContent: "flex-start",
@@ -68,7 +68,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AppBar({
-  children,
   onToggleSidebar,
   open,
   mobileOpen,
@@ -84,20 +83,22 @@ export default function AppBar({
     const value = !darkModeVar();
     darkModeVar(value);
     if (!value) {
-      document.documentElement.classList.remove(["dark-theme"]);
+      // document.documentElement.classList.remove(["dark-theme"]);
+      document.documentElement.classList.remove("dark-theme");
       // document.documentElement.style.background = "#fafafa";
       document.documentElement.style.color = "rgba(0, 0, 0, 0.87)";
       // document.body.style.background = "#fafafa";
       // document.body.style.color = "rgba(0, 0, 0, 0.87)";
     } else {
-      document.documentElement.classList.add(["dark-theme"]);
+      // document.documentElement.classList.add(["dark-theme"]);
+      document.documentElement.classList.add("dark-theme");
       // document.documentElement.style.background = "#303030";
       document.documentElement.style.color = "#FFFFFF";
       // document.body.style.background = "#303030";
       // document.body.style.color = "#FFFFFF";
     }
     // Last
-    localStorage.setItem("darkMode", value);
+    localStorage.setItem("darkMode", String(value));
   }
 
   const page =
@@ -106,7 +107,7 @@ export default function AppBar({
   return (
     <MuiAppBar
       position="fixed"
-      color="transparent"
+      // color="transparent"
       color="inherit"
       elevation={0}
       className={classes.root}
