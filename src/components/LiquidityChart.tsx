@@ -1,16 +1,12 @@
 import React from "react";
+import { Button, Typography, makeStyles } from "@material-ui/core";
 import {
-  Button,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
-import {
-  AreaChart,
-  Area,
-  Legend,
+  BarChart,
+  Bar,
   Tooltip,
+  Legend,
 } from "recharts";
-import {oneMonth, oneWeek} from "../core/timestamps";
+import { oneMonth, oneWeek, numberWithCommas } from "../core";
 import { timeFormat } from "d3-time-format";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +42,7 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
         {state &&
           state.map((item, index) => (
             <p key={index} style={{margin: '5px 0'}}>
-              {item.name}: {item.value}
+              {item.name}: {numberWithCommas(item.value)}
             </p>
           ))}
       </div>
@@ -59,7 +55,7 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
 const formatDate = timeFormat("%b %d, '%y");
 const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
 
-export default function LiquidityChart({ sidebarOptions, allData, width, height }) {
+const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
   const classes = useStyles();
   const [hoveredData, setHoveredData] = React.useState([]);
   const [updatedData, setUpdatedData] = React.useState(allData);
@@ -83,28 +79,16 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
     );
   }
 
-  // const modifyItem = (selectedItem, divider) => {
-  //   return updatedData[selectedItem]?.map((item) => ({
-  //     [selectedItem]: Number(item.liquidityETH / divider).toFixed(2),
-  //   }));
-  // };
+  // console.log("hoveredData", hoveredData);
+
   const modifyItem = (selectedItem) => {
     return updatedData[selectedItem]?.map((item) => ({
       // [selectedItem]: Number(item.liquidityETH).toFixed(2),
-      [selectedItem]: Number(item.liquidityUSD).toFixed(2),
+      [selectedItem]: Math.round(Number(item.liquidityUSD)),
       [`${selectedItem}_date`]: item.date,
     }));
   };
 
-  // const ethereum = modifyItem("ethereum", 100);
-  // const bsc = modifyItem("bsc", 1);
-  // const moonriver = modifyItem("moonriver", 1);
-  // const xdai = modifyItem("xdai", 1000);
-  // const polygon = modifyItem("polygon", 10);
-  // const harmony = modifyItem("harmony", 100000);
-  // const celo = modifyItem("celo", 1000);
-  // const fantom = modifyItem("fantom", 1000);
-  // const arbitrum = modifyItem("arbitrum", 10);
   const ethereum = modifyItem("ethereum");
   const bsc = modifyItem("bsc");
   const moonriver = modifyItem("moonriver");
@@ -126,10 +110,10 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
     fantom.length,
     arbitrum.length,
   ];
-  const minLength = Math.min(...length);
-  // const maxLength = Math.max(...length);
+  // const minLength = Math.min(...length);
+  const maxLength = Math.max(...length);
 
-  const finalData = Array.from({ length: minLength }, (v, k) => ({
+  const finalData = Array.from({ length: maxLength }, (v, k) => ({
     ethereum: Number(ethereum[k]?.ethereum) || 0,
     bsc: Number(bsc[k]?.bsc) || 0,
     moonriver: Number(moonriver[k]?.moonriver) || 0,
@@ -166,7 +150,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
 
   const filterItems = (selectedItem) => {
     return allData?.[selectedItem]?.filter((d) => timespan <= d.date);
-  }
+  };
 
   React.useEffect(() => {
     setUpdatedData({
@@ -201,7 +185,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
             $4,319,493,164.81
           </Typography> */}
           <Typography variant="subtitle1" color="textSecondary">
-          {hoveredData[0] ? getDate(hoveredData[0]?.date) : ''}
+            {hoveredData[0] ? getDate(hoveredData[0]?.date) : ''}
           </Typography>
         </aside>
 
@@ -243,13 +227,11 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           </div>
         </aside>
       </div>
-      <AreaChart
-        width={width || 600}
-        // height={height || 400}
-        height={height - 100 || 400}
+      <BarChart
+        width={width || 500}
+        height={height - 100 || 300}
         // data={data}
         data={finalData}
-        // data={updatedData}
         margin={{
           top: 10,
           right: 0,
@@ -257,44 +239,10 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           bottom: 0,
         }}
       >
-        <defs>
-          <linearGradient id="colorEthereum" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#8884d8" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorBsc" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#82ca9d" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorMoonriver" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="red" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="red" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorXdai" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="green" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="green" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorPolygon" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="blue" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="blue" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorHarmony" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="gray" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="gray" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorCelo" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="tomato" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="tomato" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorFantom" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="cyan" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="cyan" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorArbitrum" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#bdbdbd" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#bdbdbd" stopOpacity={0} />
-          </linearGradient>
-        </defs>
+        {/* <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      <YAxis /> */}
+        {/* <Tooltip /> */}
         <Tooltip
           content={
             <CustomTooltip
@@ -306,88 +254,35 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           }
         />
         <Legend verticalAlign="top" height={36} />
+        {/* <Bar dataKey="pv" stackId="a" fill="#8884d8" />
+      <Bar dataKey="uv" stackId="a" fill="#82ca9d" />
+      <Bar dataKey="amt" stackId="a" fill="tomato" /> */}
         {sidebarOptions.ethereum && (
-          <Area
-            type="monotone"
-            dataKey="ethereum"
-            stroke="#8884d8"
-            fill="url(#colorEthereum)"
-            fillOpacity={1}
-          />
+          <Bar dataKey="ethereum" stackId="a" fill="#8884d8" />
         )}
-        {sidebarOptions.bsc && (
-          <Area
-            type="monotone"
-            dataKey="bsc"
-            stroke="#82ca9d"
-            fill="url(#colorBsc)"
-            fillOpacity={1}
-          />
-        )}
+        {sidebarOptions.bsc && <Bar dataKey="bsc" stackId="a" fill="#82ca9d" />}
         {sidebarOptions.moonriver && (
-          <Area
-            type="monotone"
-            dataKey="moonriver"
-            stroke="red"
-            fill="url(#colorMoonriver)"
-            fillOpacity={1}
-          />
+          <Bar dataKey="moonriver" stackId="a" fill="red" />
         )}
-        {sidebarOptions.xdai && (
-          <Area
-            type="monotone"
-            dataKey="xdai"
-            stroke="green"
-            fill="url(#colorXdai)"
-            fillOpacity={1}
-          />
-        )}
+        {sidebarOptions.xdai && <Bar dataKey="xdai" stackId="a" fill="green" />}
         {sidebarOptions.polygon && (
-          <Area
-            type="monotone"
-            dataKey="polygon"
-            stroke="blue"
-            fill="url(#colorPolygon)"
-            fillOpacity={1}
-          />
+          <Bar dataKey="polygon" stackId="a" fill="blue" />
         )}
         {sidebarOptions.harmony && (
-          <Area
-            type="monotone"
-            dataKey="harmony"
-            stroke="gray"
-            fill="url(#colorHarmony)"
-            fillOpacity={1}
-          />
+          <Bar dataKey="harmony" stackId="a" fill="gray" />
         )}
         {sidebarOptions.celo && (
-          <Area
-            type="monotone"
-            dataKey="celo"
-            stroke="tomato"
-            fill="url(#colorCelo)"
-            fillOpacity={1}
-          />
+          <Bar dataKey="celo" stackId="a" fill="tomato" />
         )}
         {sidebarOptions.fantom && (
-          <Area
-            type="monotone"
-            dataKey="fantom"
-            stroke="cyan"
-            fill="url(#colorFantom)"
-            fillOpacity={1}
-          />
+          <Bar dataKey="fantom" stackId="a" fill="cyan" />
         )}
         {sidebarOptions.arbitrum && (
-          <Area
-            type="monotone"
-            dataKey="arbitrum"
-            stroke="#bdbdbd"
-            fill="url(#colorArbitrum)"
-            fillOpacity={1}
-          />
+          <Bar dataKey="arbitrum" stackId="a" fill="#bdbdbd" />
         )}
-      </AreaChart>
+      </BarChart>
     </div>
   );
-}
+};
+
+export default LiquidityChart;

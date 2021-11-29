@@ -1,15 +1,16 @@
 import React from "react";
-import { Button, Typography, makeStyles } from "@material-ui/core";
 import {
-  BarChart,
-  Bar,
-  // XAxis,
-  // YAxis,
-  // CartesianGrid,
-  Tooltip,
+  Button,
+  Typography,
+  makeStyles,
+} from "@material-ui/core";
+import {
+  AreaChart,
+  Area,
   Legend,
+  Tooltip,
 } from "recharts";
-import { oneMonth, oneWeek, numberWithCommas } from "../core";
+import {oneMonth, oneWeek} from "../core/timestamps";
 import { timeFormat } from "d3-time-format";
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +46,7 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
         {state &&
           state.map((item, index) => (
             <p key={index} style={{margin: '5px 0'}}>
-              {item.name}: {numberWithCommas(item.value)}
+              {item.name}: {item.value}
             </p>
           ))}
       </div>
@@ -58,7 +59,7 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
 const formatDate = timeFormat("%b %d, '%y");
 const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
 
-const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
+export default function LiquidityChart({ sidebarOptions, allData, width, height }) {
   const classes = useStyles();
   const [hoveredData, setHoveredData] = React.useState([]);
   const [updatedData, setUpdatedData] = React.useState(allData);
@@ -82,16 +83,28 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
     );
   }
 
-  // console.log("hoveredData", hoveredData);
-
+  // const modifyItem = (selectedItem, divider) => {
+  //   return updatedData[selectedItem]?.map((item) => ({
+  //     [selectedItem]: Number(item.liquidityETH / divider).toFixed(2),
+  //   }));
+  // };
   const modifyItem = (selectedItem) => {
     return updatedData[selectedItem]?.map((item) => ({
-      // [selectedItem]: Number(item.volumeETH).toFixed(2),
-      [selectedItem]: Math.round(Number(item.volumeUSD)),
+      // [selectedItem]: Number(item.liquidityETH).toFixed(2),
+      [selectedItem]: Number(item.liquidityUSD).toFixed(2),
       [`${selectedItem}_date`]: item.date,
     }));
   };
 
+  // const ethereum = modifyItem("ethereum", 100);
+  // const bsc = modifyItem("bsc", 1);
+  // const moonriver = modifyItem("moonriver", 1);
+  // const xdai = modifyItem("xdai", 1000);
+  // const polygon = modifyItem("polygon", 10);
+  // const harmony = modifyItem("harmony", 100000);
+  // const celo = modifyItem("celo", 1000);
+  // const fantom = modifyItem("fantom", 1000);
+  // const arbitrum = modifyItem("arbitrum", 10);
   const ethereum = modifyItem("ethereum");
   const bsc = modifyItem("bsc");
   const moonriver = modifyItem("moonriver");
@@ -113,10 +126,10 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
     fantom.length,
     arbitrum.length,
   ];
-  // const minLength = Math.min(...length);
-  const maxLength = Math.max(...length);
+  const minLength = Math.min(...length);
+  // const maxLength = Math.max(...length);
 
-  const finalData = Array.from({ length: maxLength }, (v, k) => ({
+  const finalData = Array.from({ length: minLength }, (v, k) => ({
     ethereum: Number(ethereum[k]?.ethereum) || 0,
     bsc: Number(bsc[k]?.bsc) || 0,
     moonriver: Number(moonriver[k]?.moonriver) || 0,
@@ -153,7 +166,7 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
 
   const filterItems = (selectedItem) => {
     return allData?.[selectedItem]?.filter((d) => timespan <= d.date);
-  };
+  }
 
   React.useEffect(() => {
     setUpdatedData({
@@ -182,13 +195,13 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
       >
         <aside>
           <Typography variant="subtitle2" color="textSecondary">
-            Volume
+            Liquidity
           </Typography>
           {/* <Typography variant="h5" color="textPrimary">
             $4,319,493,164.81
           </Typography> */}
           <Typography variant="subtitle1" color="textSecondary">
-            {hoveredData[0] ? getDate(hoveredData[0]?.date) : ''}
+          {hoveredData[0] ? getDate(hoveredData[0]?.date) : ''}
           </Typography>
         </aside>
 
@@ -230,11 +243,13 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
           </div>
         </aside>
       </div>
-      <BarChart
-        width={width || 500}
-        height={height - 100 || 300}
+      <AreaChart
+        width={width || 600}
+        // height={height || 400}
+        height={height - 100 || 400}
         // data={data}
         data={finalData}
+        // data={updatedData}
         margin={{
           top: 10,
           right: 0,
@@ -242,10 +257,44 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
           bottom: 0,
         }}
       >
-        {/* <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis /> */}
-        {/* <Tooltip /> */}
+        <defs>
+          <linearGradient id="colorEthereum" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#8884d8" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorBsc" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#82ca9d" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorMoonriver" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="red" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="red" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorXdai" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="green" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="green" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorPolygon" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="blue" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="blue" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorHarmony" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="gray" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="gray" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorCelo" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="tomato" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="tomato" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorFantom" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="cyan" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="cyan" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorArbitrum" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#bdbdbd" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#bdbdbd" stopOpacity={0} />
+          </linearGradient>
+        </defs>
         <Tooltip
           content={
             <CustomTooltip
@@ -257,35 +306,88 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
           }
         />
         <Legend verticalAlign="top" height={36} />
-        {/* <Bar dataKey="pv" stackId="a" fill="#8884d8" />
-      <Bar dataKey="uv" stackId="a" fill="#82ca9d" />
-      <Bar dataKey="amt" stackId="a" fill="tomato" /> */}
         {sidebarOptions.ethereum && (
-          <Bar dataKey="ethereum" stackId="a" fill="#8884d8" />
+          <Area
+            type="monotone"
+            dataKey="ethereum"
+            stroke="#8884d8"
+            fill="url(#colorEthereum)"
+            fillOpacity={1}
+          />
         )}
-        {sidebarOptions.bsc && <Bar dataKey="bsc" stackId="a" fill="#82ca9d" />}
+        {sidebarOptions.bsc && (
+          <Area
+            type="monotone"
+            dataKey="bsc"
+            stroke="#82ca9d"
+            fill="url(#colorBsc)"
+            fillOpacity={1}
+          />
+        )}
         {sidebarOptions.moonriver && (
-          <Bar dataKey="moonriver" stackId="a" fill="red" />
+          <Area
+            type="monotone"
+            dataKey="moonriver"
+            stroke="red"
+            fill="url(#colorMoonriver)"
+            fillOpacity={1}
+          />
         )}
-        {sidebarOptions.xdai && <Bar dataKey="xdai" stackId="a" fill="green" />}
+        {sidebarOptions.xdai && (
+          <Area
+            type="monotone"
+            dataKey="xdai"
+            stroke="green"
+            fill="url(#colorXdai)"
+            fillOpacity={1}
+          />
+        )}
         {sidebarOptions.polygon && (
-          <Bar dataKey="polygon" stackId="a" fill="blue" />
+          <Area
+            type="monotone"
+            dataKey="polygon"
+            stroke="blue"
+            fill="url(#colorPolygon)"
+            fillOpacity={1}
+          />
         )}
         {sidebarOptions.harmony && (
-          <Bar dataKey="harmony" stackId="a" fill="gray" />
+          <Area
+            type="monotone"
+            dataKey="harmony"
+            stroke="gray"
+            fill="url(#colorHarmony)"
+            fillOpacity={1}
+          />
         )}
         {sidebarOptions.celo && (
-          <Bar dataKey="celo" stackId="a" fill="tomato" />
+          <Area
+            type="monotone"
+            dataKey="celo"
+            stroke="tomato"
+            fill="url(#colorCelo)"
+            fillOpacity={1}
+          />
         )}
         {sidebarOptions.fantom && (
-          <Bar dataKey="fantom" stackId="a" fill="cyan" />
+          <Area
+            type="monotone"
+            dataKey="fantom"
+            stroke="cyan"
+            fill="url(#colorFantom)"
+            fillOpacity={1}
+          />
         )}
         {sidebarOptions.arbitrum && (
-          <Bar dataKey="arbitrum" stackId="a" fill="#bdbdbd" />
+          <Area
+            type="monotone"
+            dataKey="arbitrum"
+            stroke="#bdbdbd"
+            fill="url(#colorArbitrum)"
+            fillOpacity={1}
+          />
         )}
-      </BarChart>
+      </AreaChart>
     </div>
   );
-};
-
-export default VolumeChart;
+}
