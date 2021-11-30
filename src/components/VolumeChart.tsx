@@ -87,7 +87,8 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
   const modifyItem = (selectedItem) => {
     return updatedData[selectedItem]?.map((item) => ({
       // [selectedItem]: Number(item.volumeETH).toFixed(2),
-      [selectedItem]: Math.round(Number(item.volumeUSD)),
+      [selectedItem]: Number(item.volumeUSD).toFixed(2),
+      // [selectedItem]: Math.round(Number(item.volumeUSD)),
       [`${selectedItem}_date`]: item.date,
     }));
   };

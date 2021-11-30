@@ -13,9 +13,18 @@ export const dayDataFieldsQuery = gql`
   }
 `;
 
+// export const customDayDatasQuery = gql`
+//   query dayDatasQuery($first: Int! = 1000, $date: Int! = 0) {
+//     dayDatas(first: $first, orderBy: date, orderDirection: desc) {
+//       ...dayDataFields
+//     }
+//   }
+//   ${dayDataFieldsQuery}
+// `;
+
 export const customDayDatasQuery = gql`
-  query dayDatasQuery($first: Int! = 1000, $date: Int! = 0) {
-    dayDatas(first: $first, orderBy: date, orderDirection: desc) {
+  query dayDatasQuery($first: Int! = 1000, $date: Int! = 1) {
+    dayDatas(first: $first, orderBy: date, orderDirection: asc) {
       ...dayDataFields
     }
   }

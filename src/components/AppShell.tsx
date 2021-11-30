@@ -13,9 +13,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 
-  hide: {
-    display: "none",
-  },
+  // hide: {
+  //   display: "none",
+  // },
 
   drawer: {
     [theme.breakpoints.up("sm")]: {
@@ -75,11 +75,12 @@ function AppShell(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   const onToggleSidebar = () => {
-    if (!matches) {
-      setMobileOpen(!mobileOpen);
-    } else {
-      setOpen(!open);
-    }
+    // if (!matches) {
+    //   setMobileOpen(!mobileOpen);
+    // } else {
+    //   setOpen(!open);
+    // }
+    setOpen(!open);
   };
 
   return (
@@ -108,7 +109,7 @@ function AppShell(props) {
             <AppNavigation />
           </Drawer>
         </Hidden> */}
-        <Hidden xsDown implementation="css">
+        {/* <Hidden xsDown implementation="css"> */}
           <Drawer
             className={classes.drawer}
             variant="persistent"
@@ -121,7 +122,7 @@ function AppShell(props) {
           >
             <AppSidebar sidebarOptions={sidebarOptions} setSidebarOptions={setSidebarOptions} />
           </Drawer>
-        </Hidden>
+        {/* </Hidden> */}
       </nav>
       <main
         className={clsx(classes.content, {

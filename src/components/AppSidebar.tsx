@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(3),
+    marginTop: theme.spacing(6),
   },
 }));
 
@@ -38,7 +39,6 @@ export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
   return (
     <div className={classes.root}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Assign responsibility</FormLabel>
         <FormGroup>
           {items.map((item) => (
             <FormControlLabel

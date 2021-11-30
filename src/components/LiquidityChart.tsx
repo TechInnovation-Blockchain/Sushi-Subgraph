@@ -84,7 +84,8 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
   const modifyItem = (selectedItem) => {
     return updatedData[selectedItem]?.map((item) => ({
       // [selectedItem]: Number(item.liquidityETH).toFixed(2),
-      [selectedItem]: Math.round(Number(item.liquidityUSD)),
+      // [selectedItem]: Math.round(Number(item.liquidityUSD)),
+      [selectedItem]: Number(item.liquidityUSD).toFixed(2),
       [`${selectedItem}_date`]: item.date,
     }));
   };
