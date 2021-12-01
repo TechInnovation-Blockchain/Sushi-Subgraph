@@ -1,4 +1,6 @@
 import React from "react";
+import { useReactiveVar } from "@apollo/client";
+import { useRouter } from "next/router";
 import {
   Box,
   Container,
@@ -18,12 +20,9 @@ import {
   Menu,
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-
 import clsx from "clsx";
 import { darkModeVar } from "../core";
 import useDetect from "../core/hooks/useDetect";
-import { useReactiveVar } from "@apollo/client";
-import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {

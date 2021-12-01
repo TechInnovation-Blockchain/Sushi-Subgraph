@@ -21,6 +21,7 @@ import { customDayDatasQuery } from "../apollo/queries";
 
 function IndexPage() {
   const [loading, setLoading] = useState(false);
+  const [totalHeight, setTotalHeight] = React.useState(350);
   const [sidebarOptions, setSidebarOptions] = useState({
     ethereum: true,
     bsc: false,
@@ -69,23 +70,83 @@ function IndexPage() {
         query: customDayDatasQuery,
       });
 
+      const getDateArr = (data) => data.map((item) => item.date);
+
+      const getNewData = (oldData) => {
+        return uniqueArr.map((item) => {
+          const value = oldData.find((_item) => _item.date === item);
+
+          return {
+            date: item,
+            liquidityUSD: value ? Number(value.liquidityUSD) : 0,
+            volumeUSD: value ? Number(value.volumeUSD) : 0,
+            strDate: new Date(item * 1000),
+          };
+        });
+      };
+
+      const ethereumDate = getDateArr(ethereum_res.data.dayDatas);
+      const bscDate = getDateArr(bsc_res.data.dayDatas);
+      const moonriverDate = getDateArr(moonriver_res.data.dayDatas);
+      const xdaiDate = getDateArr(xdai_res.data.dayDatas);
+      const polygonDate = getDateArr(polygon_res.data.dayDatas);
+      const harmonyDate = getDateArr(harmony_res.data.dayDatas);
+      const celoDate = getDateArr(celo_res.data.dayDatas);
+      const fantomDate = getDateArr(fantom_res.data.dayDatas);
+      const arbitrumDate = getDateArr(arbitrum_res.data.dayDatas);
+
+      const uniqueArr = Array.from(
+        new Set([
+          ...ethereumDate,
+          ...bscDate,
+          ...moonriverDate,
+          ...xdaiDate,
+          ...polygonDate,
+          ...harmonyDate,
+          ...celoDate,
+          ...fantomDate,
+          ...arbitrumDate,
+        ])
+      );
+
+      const ethereumNew = getNewData(ethereum_res.data.dayDatas);
+      const bscNew = getNewData(bsc_res.data.dayDatas);
+      const moonriverNew = getNewData(moonriver_res.data.dayDatas);
+      const xdaiNew = getNewData(xdai_res.data.dayDatas);
+      const polygonNew = getNewData(polygon_res.data.dayDatas);
+      const harmonyNew = getNewData(harmony_res.data.dayDatas);
+      const celoNew = getNewData(celo_res.data.dayDatas);
+      const fantomNew = getNewData(fantom_res.data.dayDatas);
+      const arbitrumNew = getNewData(arbitrum_res.data.dayDatas);
+
+      // setAllData({
+      //   ...allData,
+      //   ethereum: ethereum_res.data.dayDatas,
+      //   bsc: bsc_res.data.dayDatas,
+      //   moonriver: moonriver_res.data.dayDatas,
+      //   xdai: xdai_res.data.dayDatas,
+      //   polygon: polygon_res.data.dayDatas,
+      //   harmony: harmony_res.data.dayDatas,
+      //   celo: celo_res.data.dayDatas,
+      //   fantom: fantom_res.data.dayDatas,
+      //   arbitrum: arbitrum_res.data.dayDatas,
+      // });
       setAllData({
         ...allData,
-        ethereum: ethereum_res.data.dayDatas,
-        bsc: bsc_res.data.dayDatas,
-        moonriver: moonriver_res.data.dayDatas,
-        xdai: xdai_res.data.dayDatas,
-        polygon: polygon_res.data.dayDatas,
-        harmony: harmony_res.data.dayDatas,
-        celo: celo_res.data.dayDatas,
-        fantom: fantom_res.data.dayDatas,
-        arbitrum: arbitrum_res.data.dayDatas,
+        ethereum: ethereumNew,
+        bsc: bscNew,
+        moonriver: moonriverNew,
+        xdai: xdaiNew,
+        polygon: polygonNew,
+        harmony: harmonyNew,
+        celo: celoNew,
+        fantom: fantomNew,
+        arbitrum: arbitrumNew,
       });
       setLoading(false);
     };
     fetchData();
   }, []);
-
 
   return (
     <AppShell
@@ -102,7 +163,7 @@ function IndexPage() {
         allData?.ethereum !== null && (
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={6}>
-              <Paper variant="outlined" style={{ height: 350 }}>
+              <Paper variant="outlined" style={{ height: totalHeight }}>
                 <ParentSize>
                   {({ width, height }) => (
                     <LiquidityChart
@@ -110,17 +171,25 @@ function IndexPage() {
                       height={height}
                       sidebarOptions={sidebarOptions}
                       allData={allData}
+                      totalHeight={totalHeight}
+                      setTotalHeight={setTotalHeight}
                     />
                   )}
                 </ParentSize>
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
-              <Paper variant="outlined" style={{ height: 350 }}>
+              <Paper variant="outlined" style={{ height: totalHeight }}>
                 <ParentSize>
                   {({ width, height }) => (
-                    <VolumeChart width={width} height={height} sidebarOptions={sidebarOptions}
-                    allData={allData} />
+                    <VolumeChart
+                      width={width}
+                      height={height}
+                      sidebarOptions={sidebarOptions}
+                      allData={allData}
+                      totalHeight={totalHeight}
+                      setTotalHeight={setTotalHeight}
+                    />
                   )}
                 </ParentSize>
               </Paper>

@@ -1,14 +1,6 @@
 import React from "react";
 import { Button, Typography, makeStyles } from "@material-ui/core";
-import {
-  BarChart,
-  Bar,
-  // XAxis,
-  // YAxis,
-  // CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { BarChart, Bar, Tooltip, Legend } from "recharts";
 import { oneMonth, oneWeek, numberWithCommas } from "../core";
 import { timeFormat } from "d3-time-format";
 
@@ -23,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
-  const [state, setState] = React.useState([]);
+  // const [state, setState] = React.useState([]);
 
   React.useEffect(() => {
     if (active && payload && payload.length) {
@@ -32,25 +24,29 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
         date: item.payload[`${item.name}_date`],
         value: item.value,
       }));
-      // console.log("hover data", hoverItem);
-      setState(hoverItem);
+      // setState(hoverItem);
       setHoveredData(hoverItem);
     }
   }, [label]);
 
-  if (active && payload && payload.length) {
-    return (
-      <div style={{ background: 'gray', padding: '15px', borderRadius: '20px' }}>
-        {/* <p>{getDate(state[0]?.date)}</p> */}
-        {state &&
-          state.map((item, index) => (
-            <p key={index} style={{margin: '5px 0'}}>
-              {item.name}: {numberWithCommas(item.value)}
-            </p>
-          ))}
-      </div>
-    );
-  }
+  // if (active && payload && payload.length) {
+  //   return (
+  //     <div
+  //       style={{
+  //         background: "gray",
+  //         padding: "15px",
+  //         borderRadius: "20px",
+  //       }}
+  //     >
+  //       {state &&
+  //         state.map((item, index) => (
+  //           <p key={index} style={{ margin: "5px 0" }}>
+  //             {item.name}: {"$" + numberWithCommas(item.value)}
+  //           </p>
+  //         ))}
+  //     </div>
+  //   );
+  // }
 
   return null;
 };
@@ -58,11 +54,33 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
 const formatDate = timeFormat("%b %d, '%y");
 const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
 
-const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
+const VolumeChart = ({
+  sidebarOptions,
+  allData,
+  width,
+  height,
+  totalHeight,
+  setTotalHeight,
+}) => {
   const classes = useStyles();
+  // const [totalHeight, setTotalHeight] = React.useState(height || 350);
+  const [topHeight, setTopHeight] = React.useState(100);
   const [hoveredData, setHoveredData] = React.useState([]);
   const [updatedData, setUpdatedData] = React.useState(allData);
+
   React.useEffect(() => setUpdatedData(allData), [allData]);
+  React.useEffect(() => {
+    const len = Object.keys(sidebarOptions)
+      .map((key) => sidebarOptions[key])
+      .filter((item) => item == true).length;
+    if (len > 0) {
+      setTotalHeight(350 + 34 * len);
+      setTopHeight(34 * len);
+    } else {
+      setTotalHeight(350);
+      setTopHeight(100);
+    }
+  }, [sidebarOptions]);
 
   if (
     allData.ethereum === null ||
@@ -84,59 +102,81 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
 
   // console.log("hoveredData", hoveredData);
 
-  const modifyItem = (selectedItem) => {
-    return updatedData[selectedItem]?.map((item) => ({
-      // [selectedItem]: Number(item.volumeETH).toFixed(2),
-      [selectedItem]: Number(item.volumeUSD).toFixed(2),
-      // [selectedItem]: Math.round(Number(item.volumeUSD)),
-      [`${selectedItem}_date`]: item.date,
-    }));
-  };
+  // const modifyItem = (selectedItem) => {
+  //   return updatedData[selectedItem]?.map((item) => ({
+  //     // [selectedItem]: Number(item.volumeETH).toFixed(2),
+  //     [selectedItem]: Number(item.volumeUSD).toFixed(2),
+  //     // [selectedItem]: Math.round(Number(item.volumeUSD)),
+  //     [`${selectedItem}_date`]: item.date,
+  //   }));
+  // };
 
-  const ethereum = modifyItem("ethereum");
-  const bsc = modifyItem("bsc");
-  const moonriver = modifyItem("moonriver");
-  const xdai = modifyItem("xdai");
-  const polygon = modifyItem("polygon");
-  const harmony = modifyItem("harmony");
-  const celo = modifyItem("celo");
-  const fantom = modifyItem("fantom");
-  const arbitrum = modifyItem("arbitrum");
+  // const ethereum = modifyItem("ethereum");
+  // const bsc = modifyItem("bsc");
+  // const moonriver = modifyItem("moonriver");
+  // const xdai = modifyItem("xdai");
+  // const polygon = modifyItem("polygon");
+  // const harmony = modifyItem("harmony");
+  // const celo = modifyItem("celo");
+  // const fantom = modifyItem("fantom");
+  // const arbitrum = modifyItem("arbitrum");
 
-  const length = [
-    ethereum.length,
-    bsc.length,
-    moonriver.length,
-    xdai.length,
-    polygon.length,
-    harmony.length,
-    celo.length,
-    fantom.length,
-    arbitrum.length,
-  ];
-  // const minLength = Math.min(...length);
-  const maxLength = Math.max(...length);
+  // const length = [
+  //   ethereum.length,
+  //   bsc.length,
+  //   moonriver.length,
+  //   xdai.length,
+  //   polygon.length,
+  //   harmony.length,
+  //   celo.length,
+  //   fantom.length,
+  //   arbitrum.length,
+  // ];
+  // // const minLength = Math.min(...length);
+  // const maxLength = Math.max(...length);
 
-  const finalData = Array.from({ length: maxLength }, (v, k) => ({
-    ethereum: Number(ethereum[k]?.ethereum) || 0,
-    bsc: Number(bsc[k]?.bsc) || 0,
-    moonriver: Number(moonriver[k]?.moonriver) || 0,
-    xdai: Number(xdai[k]?.xdai) || 0,
-    polygon: Number(polygon[k]?.polygon) || 0,
-    harmony: Number(harmony[k]?.harmony) || 0,
-    celo: Number(celo[k]?.celo) || 0,
-    fantom: Number(fantom[k]?.fantom) || 0,
-    arbitrum: Number(arbitrum[k]?.arbitrum) || 0,
+  // const finalData = Array.from({ length: maxLength }, (v, k) => ({
+  //   ethereum: Number(ethereum[k]?.ethereum) || 0,
+  //   bsc: Number(bsc[k]?.bsc) || 0,
+  //   moonriver: Number(moonriver[k]?.moonriver) || 0,
+  //   xdai: Number(xdai[k]?.xdai) || 0,
+  //   polygon: Number(polygon[k]?.polygon) || 0,
+  //   harmony: Number(harmony[k]?.harmony) || 0,
+  //   celo: Number(celo[k]?.celo) || 0,
+  //   fantom: Number(fantom[k]?.fantom) || 0,
+  //   arbitrum: Number(arbitrum[k]?.arbitrum) || 0,
 
-    ethereum_date: ethereum[k]?.ethereum_date || "",
-    bsc_date: bsc[k]?.bsc_date || "",
-    moonriver_date: moonriver[k]?.moonriver_date || "",
-    xdai_date: xdai[k]?.xdai_date || "",
-    polygon_date: polygon[k]?.polygon_date || "",
-    harmony_date: harmony[k]?.harmony_date || "",
-    celo_date: celo[k]?.celo_date || "",
-    fantom_date: fantom[k]?.fantom_date || "",
-    arbitrum_date: arbitrum[k]?.arbitrum_date || "",
+  //   ethereum_date: ethereum[k]?.ethereum_date || "",
+  //   bsc_date: bsc[k]?.bsc_date || "",
+  //   moonriver_date: moonriver[k]?.moonriver_date || "",
+  //   xdai_date: xdai[k]?.xdai_date || "",
+  //   polygon_date: polygon[k]?.polygon_date || "",
+  //   harmony_date: harmony[k]?.harmony_date || "",
+  //   celo_date: celo[k]?.celo_date || "",
+  //   fantom_date: fantom[k]?.fantom_date || "",
+  //   arbitrum_date: arbitrum[k]?.arbitrum_date || "",
+  // }));
+
+  const finalData = updatedData.ethereum.map((item, i) => ({
+    ethereum: Number(item.liquidityUSD).toFixed(2),
+    bsc: Number(updatedData.bsc[i]?.liquidityUSD).toFixed(2),
+    moonriver: Number(updatedData.moonriver[i]?.liquidityUSD).toFixed(2),
+    xdai: Number(updatedData.xdai[i]?.liquidityUSD).toFixed(2),
+    polygon: Number(updatedData.polygon[i]?.liquidityUSD).toFixed(2),
+    harmony: Number(updatedData.harmony[i]?.liquidityUSD).toFixed(2),
+    celo: Number(updatedData.celo[i]?.liquidityUSD).toFixed(2),
+    fantom: Number(updatedData.fantom[i]?.liquidityUSD).toFixed(2),
+    arbitrum: Number(updatedData.arbitrum[i]?.liquidityUSD).toFixed(2),
+
+    ethereum_date: getDate(item.date),
+    bsc_date: getDate(updatedData.bsc[i]?.date),
+    moonriver_date: getDate(updatedData.moonriver[i]?.date),
+    xdai_date: getDate(updatedData.xdai[i]?.date),
+    polygon_date: getDate(updatedData.polygon[i]?.date),
+    harmony_date: getDate(updatedData.harmony[i]?.date),
+    celo_date: getDate(updatedData.celo[i]?.date),
+    fantom_date: getDate(updatedData.fantom[i]?.date),
+    arbitrum_date: getDate(updatedData.arbitrum[i]?.date),
   }));
 
   const [timespan, setTimespan] = React.useState(oneMonth());
@@ -175,7 +215,7 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
     <div>
       <div
         style={{
-          height: "100px",
+          height: topHeight + "px",
           padding: "24px",
           display: "flex",
           justifyContent: "space-between",
@@ -185,11 +225,8 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
           <Typography variant="subtitle2" color="textSecondary">
             Volume
           </Typography>
-          {/* <Typography variant="h5" color="textPrimary">
-            $4,319,493,164.81
-          </Typography> */}
           <Typography variant="subtitle1" color="textSecondary">
-            {hoveredData[0] ? getDate(hoveredData[0]?.date) : ''}
+            {hoveredData[0] ? hoveredData[0]?.date : ""}
           </Typography>
         </aside>
 
@@ -229,12 +266,19 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
               ALL
             </Button>
           </div>
+
+          <div>
+            {hoveredData?.map((item, index) => (
+              <Typography variant="subtitle2" color="textSecondary" key={index}>
+                {item.name}: {"$" + numberWithCommas(item.value)}
+              </Typography>
+            ))}
+          </div>
         </aside>
       </div>
       <BarChart
-        width={width || 500}
-        height={height - 100 || 300}
-        // data={data}
+        width={width}
+        height={totalHeight - topHeight}
         data={finalData}
         margin={{
           top: 10,
@@ -243,10 +287,6 @@ const VolumeChart = ({ sidebarOptions, allData, width, height }) => {
           bottom: 0,
         }}
       >
-        {/* <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis /> */}
-        {/* <Tooltip /> */}
         <Tooltip
           content={
             <CustomTooltip

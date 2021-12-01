@@ -19,13 +19,11 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
 
   React.useEffect(() => {
     if (active && payload && payload.length) {
-      console.log("payload", payload);
       const hoverItem = payload.map((item) => ({
         name: item.name,
         date: item.payload[`${item.name}_date`],
         value: item.value,
       }));
-      console.log("hoverItem", hoverItem);
       // setState(hoverItem);
       setHoveredData(hoverItem);
     }
@@ -57,16 +55,10 @@ const formatDate = timeFormat("%b %d, '%y");
 const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
 
 // main function of the component
-const LiquidityChart = ({
-  sidebarOptions,
-  allData,
-  width,
-  height,
-  totalHeight,
-  setTotalHeight,
-}) => {
+const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
   const classes = useStyles();
-  const [topHeight, setTopHeight] = React.useState(100 - 30);
+  const [totalHeight, setTotalHeight] = React.useState(height || 350);
+  const [topHeight, setTopHeight] = React.useState(100);
   const [hoveredData, setHoveredData] = React.useState([]);
   const [updatedData, setUpdatedData] = React.useState(allData);
 
@@ -76,8 +68,8 @@ const LiquidityChart = ({
       .map((key) => sidebarOptions[key])
       .filter((item) => item == true).length;
     if (len > 0) {
-      setTotalHeight(350 + 30 * len);
-      setTopHeight(30 * len);
+      setTotalHeight(350 + 34 * len);
+      setTopHeight(34 * len);
     } else {
       setTotalHeight(350);
       setTopHeight(100);
@@ -102,84 +94,60 @@ const LiquidityChart = ({
     );
   }
 
-  // const modifyItem = (selectedItem) => {
-  //   return updatedData[selectedItem]?.map((item) => ({
-  //     // [selectedItem]: Number(item.liquidityETH).toFixed(2),
-  //     // [selectedItem]: Math.round(Number(item.liquidityUSD)),
-  //     [selectedItem]: Number(item.liquidityUSD).toFixed(2),
-  //     [`${selectedItem}_date`]: item.date,
-  //   }));
-  // };
+  const modifyItem = (selectedItem) => {
+    return updatedData[selectedItem]?.map((item) => ({
+      // [selectedItem]: Number(item.liquidityETH).toFixed(2),
+      // [selectedItem]: Math.round(Number(item.liquidityUSD)),
+      [selectedItem]: Number(item.liquidityUSD).toFixed(2),
+      [`${selectedItem}_date`]: item.date,
+    }));
+  };
 
-  // const ethereum = modifyItem("ethereum");
-  // const bsc = modifyItem("bsc");
-  // const moonriver = modifyItem("moonriver");
-  // const xdai = modifyItem("xdai");
-  // const polygon = modifyItem("polygon");
-  // const harmony = modifyItem("harmony");
-  // const celo = modifyItem("celo");
-  // const fantom = modifyItem("fantom");
-  // const arbitrum = modifyItem("arbitrum");
+  const ethereum = modifyItem("ethereum");
+  const bsc = modifyItem("bsc");
+  const moonriver = modifyItem("moonriver");
+  const xdai = modifyItem("xdai");
+  const polygon = modifyItem("polygon");
+  const harmony = modifyItem("harmony");
+  const celo = modifyItem("celo");
+  const fantom = modifyItem("fantom");
+  const arbitrum = modifyItem("arbitrum");
 
-  // const length = [
-  //   ethereum.length,
-  //   bsc.length,
-  //   moonriver.length,
-  //   xdai.length,
-  //   polygon.length,
-  //   harmony.length,
-  //   celo.length,
-  //   fantom.length,
-  //   arbitrum.length,
-  // ];
+  const length = [
+    ethereum.length,
+    bsc.length,
+    moonriver.length,
+    xdai.length,
+    polygon.length,
+    harmony.length,
+    celo.length,
+    fantom.length,
+    arbitrum.length,
+  ];
   // const minLength = Math.min(...length);
-  // const maxLength = Math.max(...length);
+  const maxLength = Math.max(...length);
 
-  // const finalData = Array.from({ length: maxLength }, (v, k) => ({
-  //   ethereum: Number(ethereum[k]?.ethereum) || 0,
-  //   bsc: Number(bsc[k]?.bsc) || 0,
-  //   moonriver: Number(moonriver[k]?.moonriver) || 0,
-  //   xdai: Number(xdai[k]?.xdai) || 0,
-  //   polygon: Number(polygon[k]?.polygon) || 0,
-  //   harmony: Number(harmony[k]?.harmony) || 0,
-  //   celo: Number(celo[k]?.celo) || 0,
-  //   fantom: Number(fantom[k]?.fantom) || 0,
-  //   arbitrum: Number(arbitrum[k]?.arbitrum) || 0,
+  const finalData = Array.from({ length: maxLength }, (v, k) => ({
+    ethereum: Number(ethereum[k]?.ethereum) || 0,
+    bsc: Number(bsc[k]?.bsc) || 0,
+    moonriver: Number(moonriver[k]?.moonriver) || 0,
+    xdai: Number(xdai[k]?.xdai) || 0,
+    polygon: Number(polygon[k]?.polygon) || 0,
+    harmony: Number(harmony[k]?.harmony) || 0,
+    celo: Number(celo[k]?.celo) || 0,
+    fantom: Number(fantom[k]?.fantom) || 0,
+    arbitrum: Number(arbitrum[k]?.arbitrum) || 0,
 
-  //   ethereum_date: ethereum[k]?.ethereum_date || "",
-  //   bsc_date: bsc[k]?.bsc_date || "",
-  //   moonriver_date: moonriver[k]?.moonriver_date || "",
-  //   xdai_date: xdai[k]?.xdai_date || "",
-  //   polygon_date: polygon[k]?.polygon_date || "",
-  //   harmony_date: harmony[k]?.harmony_date || "",
-  //   celo_date: celo[k]?.celo_date || "",
-  //   fantom_date: fantom[k]?.fantom_date || "",
-  //   arbitrum_date: arbitrum[k]?.arbitrum_date || "",
-  // }));
-
-  const finalData = updatedData.ethereum.map((item, i) => ({
-    ethereum: Number(item.liquidityUSD).toFixed(2),
-    bsc: Number(updatedData.bsc[i]?.liquidityUSD).toFixed(2),
-    moonriver: Number(updatedData.moonriver[i]?.liquidityUSD).toFixed(2),
-    xdai: Number(updatedData.xdai[i]?.liquidityUSD).toFixed(2),
-    polygon: Number(updatedData.polygon[i]?.liquidityUSD).toFixed(2),
-    harmony: Number(updatedData.harmony[i]?.liquidityUSD).toFixed(2),
-    celo: Number(updatedData.celo[i]?.liquidityUSD).toFixed(2),
-    fantom: Number(updatedData.fantom[i]?.liquidityUSD).toFixed(2),
-    arbitrum: Number(updatedData.arbitrum[i]?.liquidityUSD).toFixed(2),
-
-    ethereum_date: getDate(item.date),
-    bsc_date: getDate(updatedData.bsc[i]?.date),
-    moonriver_date: getDate(updatedData.moonriver[i]?.date),
-    xdai_date: getDate(updatedData.xdai[i]?.date),
-    polygon_date: getDate(updatedData.polygon[i]?.date),
-    harmony_date: getDate(updatedData.harmony[i]?.date),
-    celo_date: getDate(updatedData.celo[i]?.date),
-    fantom_date: getDate(updatedData.fantom[i]?.date),
-    arbitrum_date: getDate(updatedData.arbitrum[i]?.date),
+    ethereum_date: ethereum[k]?.ethereum_date || "",
+    bsc_date: bsc[k]?.bsc_date || "",
+    moonriver_date: moonriver[k]?.moonriver_date || "",
+    xdai_date: xdai[k]?.xdai_date || "",
+    polygon_date: polygon[k]?.polygon_date || "",
+    harmony_date: harmony[k]?.harmony_date || "",
+    celo_date: celo[k]?.celo_date || "",
+    fantom_date: fantom[k]?.fantom_date || "",
+    arbitrum_date: arbitrum[k]?.arbitrum_date || "",
   }));
-
-  // console.log("finalData", finalData);
 
   const [timespan, setTimespan] = React.useState(oneMonth());
 
@@ -228,7 +196,7 @@ const LiquidityChart = ({
             Liquidity
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
-            {hoveredData[0] ? hoveredData[0]?.date : ""}
+            {hoveredData[0] ? getDate(hoveredData[0]?.date) : ""}
           </Typography>
         </aside>
 
@@ -271,7 +239,12 @@ const LiquidityChart = ({
 
           <div>
             {hoveredData?.map((item, index) => (
-              <Typography variant="subtitle2" color="textSecondary" key={index}>
+              <Typography
+                variant="subtitle2"
+                color="textSecondary"
+                key={index}
+                style={{ margin: "5px 0" }}
+              >
                 {item.name}: {"$" + numberWithCommas(item.value)}
               </Typography>
             ))}
@@ -299,7 +272,7 @@ const LiquidityChart = ({
             />
           }
         />
-        <Legend verticalAlign="top" height={36} style={{background: 'red'}} />
+        <Legend verticalAlign="top" height={36} />
         {sidebarOptions.ethereum && (
           <Bar dataKey="ethereum" stackId="a" fill="#8884d8" />
         )}
