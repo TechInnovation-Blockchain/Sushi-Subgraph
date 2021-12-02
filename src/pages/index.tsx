@@ -21,7 +21,7 @@ import { customDayDatasQuery } from "../apollo/queries";
 
 function IndexPage() {
   const [loading, setLoading] = useState(false);
-  const [totalHeight, setTotalHeight] = React.useState(350);
+  const [totalHeight, setTotalHeight] = React.useState(550 + 30);
   const [sidebarOptions, setSidebarOptions] = useState({
     ethereum: true,
     bsc: false,
@@ -119,18 +119,6 @@ function IndexPage() {
       const fantomNew = getNewData(fantom_res.data.dayDatas);
       const arbitrumNew = getNewData(arbitrum_res.data.dayDatas);
 
-      // setAllData({
-      //   ...allData,
-      //   ethereum: ethereum_res.data.dayDatas,
-      //   bsc: bsc_res.data.dayDatas,
-      //   moonriver: moonriver_res.data.dayDatas,
-      //   xdai: xdai_res.data.dayDatas,
-      //   polygon: polygon_res.data.dayDatas,
-      //   harmony: harmony_res.data.dayDatas,
-      //   celo: celo_res.data.dayDatas,
-      //   fantom: fantom_res.data.dayDatas,
-      //   arbitrum: arbitrum_res.data.dayDatas,
-      // });
       setAllData({
         ...allData,
         ethereum: ethereumNew,

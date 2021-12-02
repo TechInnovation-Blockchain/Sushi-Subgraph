@@ -22,3 +22,4 @@ public/sw.js
 public/workbox*.js
 
 .env
+task
