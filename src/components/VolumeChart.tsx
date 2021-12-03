@@ -65,6 +65,9 @@ const VolumeChart = ({
       setTotalHeight(350);
       setTopHeight(100);
     }
+
+    const filteredData = hoveredData.filter((item) => sidebarOptions[item.name]);
+    setHoveredData(filteredData);
   }, [sidebarOptions]);
 
   if (
