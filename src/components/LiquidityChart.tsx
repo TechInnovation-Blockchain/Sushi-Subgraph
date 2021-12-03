@@ -69,6 +69,51 @@ const LiquidityChart = ({
     }
 
     console.log("hoveredData", hoveredData);
+  //   [
+  //     {
+  //         "name": "ethereum",
+  //         "date": "Nov 08, '21",
+  //         "value": "5725107962.52"
+  //     },
+  //     {
+  //         "name": "bsc",
+  //         "date": "Nov 08, '21",
+  //         "value": "9179015.25"
+  //     },
+  //     {
+  //         "name": "moonriver",
+  //         "date": "Nov 08, '21",
+  //         "value": "63707097.21"
+  //     },
+  //     {
+  //         "name": "xdai",
+  //         "date": "Nov 08, '21",
+  //         "value": "18895236.32"
+  //     },
+  //     {
+  //         "name": "polygon",
+  //         "date": "Nov 08, '21",
+  //         "value": "451592142.27"
+  //     },
+  //     {
+  //         "name": "harmony",
+  //         "date": "Nov 08, '21",
+  //         "value": "99860340.22"
+  //     }
+  // ]
+
+  console.log("sidebarOptions", sidebarOptions);
+//   {
+//     "ethereum": true,
+//     "bsc": false,
+//     "moonriver": true,
+//     "xdai": true,
+//     "polygon": true,
+//     "harmony": true,
+//     "celo": false,
+//     "fantom": false,
+//     "arbitrum": false
+// }
 
     // setHoveredData([]);
   }, [sidebarOptions]);
