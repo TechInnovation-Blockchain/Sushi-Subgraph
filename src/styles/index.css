@@ -127,3 +127,7 @@ body {
 .dark-theme .MuiListItemIcon-root {
   color: #fff;
 }
+
+.recharts-legend-wrapper {
+  padding: 0 6px;
+}

@@ -67,6 +67,10 @@ const LiquidityChart = ({
       setTotalHeight(350);
       setTopHeight(100);
     }
+
+    console.log("hoveredData", hoveredData);
+
+    // setHoveredData([]);
   }, [sidebarOptions]);
 
   if (

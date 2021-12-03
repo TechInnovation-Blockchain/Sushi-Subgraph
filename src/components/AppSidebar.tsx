@@ -1,10 +1,11 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import { grey } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,6 +17,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(6),
   },
 }));
+
+const GreyCheckbox = withStyles({
+  root: {
+    color: grey[500],
+    '&$checked': {
+      color: grey[700],
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
 
 export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
   const classes = useStyles();
@@ -44,12 +55,12 @@ export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
             <FormControlLabel
               key={item}
               control={
-                <Checkbox
+                <GreyCheckbox
                   checked={sidebarOptions[item]}
                   onChange={handleChange}
                   name={item}
                   // color="gray"
-                  style={{color: "gray"}}
+                  // style={{color: "gray"}}
                 />
               }
               label={item}
