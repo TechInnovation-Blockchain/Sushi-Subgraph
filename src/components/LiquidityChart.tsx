@@ -51,12 +51,18 @@ const LiquidityChart = ({
 
   React.useEffect(() => setUpdatedData(allData), [allData]);
   React.useEffect(() => {
+    let increaseHeight = 30;
     const len = Object.keys(sidebarOptions)
       .map((key) => sidebarOptions[key])
       .filter((item) => item == true).length;
+
+    if (len > 5) {
+      increaseHeight = 25;
+    }
+
     if (len > 0) {
-      setTotalHeight(350 + 30 * len);
-      setTopHeight(100 + 30 * len);
+      setTotalHeight(350 + increaseHeight * len);
+      setTopHeight(100 + increaseHeight * len);
     } else {
       setTotalHeight(350);
       setTopHeight(100);
@@ -161,7 +167,7 @@ const LiquidityChart = ({
           <Typography variant="subtitle1" color="textSecondary">
             {hoveredData[0] ? hoveredData[0]?.date : ""}
           </Typography>
-          <Typography variant="h5" color="textPrimary">
+          <Typography variant="h5" color="textPrimary" style={{margin: '10px 0'}}>
             {"$" + numberWithCommas(Number(total.toFixed(2)))}
           </Typography>
           {hoveredData?.map((item, index) => (
@@ -179,7 +185,8 @@ const LiquidityChart = ({
               aria-label="1 week timespan"
               variant="text"
               size="small"
-              color="primary"
+              // color="gray"
+              style={{color: "gray"}}
               onClick={onTimespanChange}
             >
               1W
@@ -190,7 +197,8 @@ const LiquidityChart = ({
               aria-label="1 month timespan"
               variant="text"
               size="small"
-              color="primary"
+              // color="gray"
+              style={{color: "gray"}}
               onClick={onTimespanChange}
             >
               1M
@@ -201,7 +209,8 @@ const LiquidityChart = ({
               aria-label="ALL timespan"
               variant="text"
               size="small"
-              color="primary"
+              // color="gray"
+              style={{color: "gray"}}
               onClick={onTimespanChange}
             >
               ALL
@@ -231,7 +240,7 @@ const LiquidityChart = ({
             />
           }
         />
-        <Legend verticalAlign="bottom" height={36 + 30} />
+        <Legend verticalAlign="bottom" align="left" height={36 + 30} />
         {sidebarOptions.ethereum && (
           <Bar dataKey="ethereum" stackId="a" fill="#8884d8" />
         )}

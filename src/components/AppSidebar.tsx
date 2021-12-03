@@ -48,6 +48,8 @@ export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
                   checked={sidebarOptions[item]}
                   onChange={handleChange}
                   name={item}
+                  // color="gray"
+                  style={{color: "gray"}}
                 />
               }
               label={item}
