@@ -73,3 +73,11 @@ export const arbitrum_client = new ApolloClient({
   cache: new InMemoryCache(),
   shouldBatch: true,
 });
+
+export const avalanche_client = new ApolloClient({
+  link: new HttpLink({
+    uri: "https://api.thegraph.com/subgraphs/name/sushiswap/avalanche-exchange",
+  }),
+  cache: new InMemoryCache(),
+  shouldBatch: true,
+});

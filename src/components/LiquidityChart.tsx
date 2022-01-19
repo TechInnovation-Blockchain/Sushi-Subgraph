@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Typography, makeStyles } from "@material-ui/core";
 import { BarChart, Bar, Tooltip, Legend } from "recharts";
 import { oneMonth, oneWeek, numberWithCommas } from "../core";
 import { timeFormat } from "d3-time-format";
+import { networkItems } from "../data";
 
 const useStyles = makeStyles((theme) => ({
   filter: {
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
-  React.useEffect(() => {
+  useEffect(() => {
     if (active && payload && payload.length) {
       console.log("payload", payload);
       const hoverItem = payload.map((item) => ({
@@ -23,7 +24,7 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
         date: item.payload[`${item.name}_date`],
         value: item.value,
       }));
-      console.log("hoverItem", hoverItem);
+      // console.log("hoverItem", hoverItem);
       setHoveredData(hoverItem);
     }
   }, [label]);
@@ -44,13 +45,16 @@ const LiquidityChart = ({
   setTotalHeight,
 }) => {
   const classes = useStyles();
-  const [topHeight, setTopHeight] = React.useState(100);
-  const [hoveredData, setHoveredData] = React.useState([]);
-  const [updatedData, setUpdatedData] = React.useState(allData);
-  const [total, setTotal] = React.useState(0);
+  const [topHeight, setTopHeight] = useState(100);
+  const [hoveredData, setHoveredData] = useState([]);
+  const [updatedData, setUpdatedData] = useState(allData);
+  const [total, setTotal] = useState(0);
 
-  React.useEffect(() => setUpdatedData(allData), [allData]);
-  React.useEffect(() => {
+  useEffect(() => {
+    setUpdatedData(allData);
+  }, [allData]);
+
+  useEffect(() => {
     let increaseHeight = 30;
     const len = Object.keys(sidebarOptions)
       .map((key) => sidebarOptions[key])
@@ -68,10 +72,13 @@ const LiquidityChart = ({
       setTopHeight(100);
     }
 
-    const filteredData = hoveredData.filter((item) => sidebarOptions[item.name]);
+    const filteredData = hoveredData.filter(
+      (item) => sidebarOptions[item.name]
+    );
     setHoveredData(filteredData);
   }, [sidebarOptions]);
 
+  // TODO: add condition to check if the data is null
   if (
     allData.ethereum === null ||
     allData.bsc === null ||
@@ -81,7 +88,8 @@ const LiquidityChart = ({
     allData.harmony === null ||
     allData.celo === null ||
     allData.fantom === null ||
-    allData.arbitrum === null
+    allData.arbitrum === null ||
+    allData.avalanche === null
   ) {
     return (
       <div>
@@ -90,6 +98,7 @@ const LiquidityChart = ({
     );
   }
 
+  // TODO: update data for finalData
   const finalData = updatedData.ethereum.map((item, i) => ({
     ethereum: Number(item.liquidityUSD).toFixed(2),
     bsc: Number(updatedData.bsc[i]?.liquidityUSD).toFixed(2),
@@ -100,6 +109,7 @@ const LiquidityChart = ({
     celo: Number(updatedData.celo[i]?.liquidityUSD).toFixed(2),
     fantom: Number(updatedData.fantom[i]?.liquidityUSD).toFixed(2),
     arbitrum: Number(updatedData.arbitrum[i]?.liquidityUSD).toFixed(2),
+    avalanche: Number(updatedData.avalanche[i]?.liquidityUSD).toFixed(2),
 
     ethereum_date: getDate(item.date),
     bsc_date: getDate(updatedData.bsc[i]?.date),
@@ -110,9 +120,10 @@ const LiquidityChart = ({
     celo_date: getDate(updatedData.celo[i]?.date),
     fantom_date: getDate(updatedData.fantom[i]?.date),
     arbitrum_date: getDate(updatedData.arbitrum[i]?.date),
+    avalanche_date: getDate(updatedData.avalanche[i]?.date),
   }));
 
-  const [timespan, setTimespan] = React.useState(oneMonth());
+  const [timespan, setTimespan] = useState(oneMonth());
 
   function onTimespanChange(e) {
     const value = e.currentTarget.value;
@@ -129,28 +140,46 @@ const LiquidityChart = ({
     return allData?.[selectedItem]?.filter((d) => timespan <= d.date);
   };
 
-  React.useEffect(() => {
-    setUpdatedData({
-      ...updatedData,
-      ethereum: filterItems("ethereum"),
-      bsc: filterItems("bsc"),
-      moonriver: filterItems("moonriver"),
-      xdai: filterItems("xdai"),
-      polygon: filterItems("polygon"),
-      harmony: filterItems("harmony"),
-      celo: filterItems("celo"),
-      fantom: filterItems("fantom"),
-      arbitrum: filterItems("arbitrum"),
+  const lastData = finalData[finalData.length - 1];
+  const firstTimeHoveredData = [];
+  const sidebarOptionsKeys = Object.keys(sidebarOptions);
+
+  sidebarOptionsKeys.forEach((key) => {
+    if (sidebarOptions[key]) {
+      firstTimeHoveredData.push({
+        name: key,
+        date: lastData[`${key}_date`],
+        value: lastData[key],
+      });
+    }
+  });
+
+  useEffect(() => {
+    const newData = {};
+
+    networkItems.forEach((item) => {
+      newData[item.name] = filterItems(item.name);
     });
+
+    setUpdatedData(newData);
   }, [timespan]);
 
-  React.useEffect(() => {
-    const totalOfValues = hoveredData?.reduce(
+  useEffect(() => {
+    let _hoveredData = hoveredData;
+    if (_hoveredData.length === 0) {
+      _hoveredData = firstTimeHoveredData;
+    }
+    const totalOfValues = _hoveredData?.reduce(
       (acc, curr) => acc + Number(curr.value),
       0
     );
+    setHoveredData(_hoveredData);
     setTotal(totalOfValues);
   }, [hoveredData]);
+
+  const selectedData = networkItems.filter(
+    (item) => sidebarOptions[item.name] === true
+  );
 
   return (
     <div>
@@ -170,7 +199,11 @@ const LiquidityChart = ({
           <Typography variant="subtitle1" color="textSecondary">
             {hoveredData[0] ? hoveredData[0]?.date : ""}
           </Typography>
-          <Typography variant="h5" color="textPrimary" style={{margin: '10px 0'}}>
+          <Typography
+            variant="h5"
+            color="textPrimary"
+            style={{ margin: "10px 0" }}
+          >
             {"$" + numberWithCommas(Number(total.toFixed(2)))}
           </Typography>
           {hoveredData?.map((item, index) => (
@@ -188,8 +221,7 @@ const LiquidityChart = ({
               aria-label="1 week timespan"
               variant="text"
               size="small"
-              // color="gray"
-              style={{color: "gray"}}
+              style={{ color: "gray" }}
               onClick={onTimespanChange}
             >
               1W
@@ -200,8 +232,7 @@ const LiquidityChart = ({
               aria-label="1 month timespan"
               variant="text"
               size="small"
-              // color="gray"
-              style={{color: "gray"}}
+              style={{ color: "gray" }}
               onClick={onTimespanChange}
             >
               1M
@@ -212,8 +243,7 @@ const LiquidityChart = ({
               aria-label="ALL timespan"
               variant="text"
               size="small"
-              // color="gray"
-              style={{color: "gray"}}
+              style={{ color: "gray" }}
               onClick={onTimespanChange}
             >
               ALL
@@ -244,29 +274,10 @@ const LiquidityChart = ({
           }
         />
         <Legend verticalAlign="bottom" align="left" height={36 + 30} />
-        {sidebarOptions.ethereum && (
-          <Bar dataKey="ethereum" stackId="a" fill="#8884d8" />
-        )}
-        {sidebarOptions.bsc && <Bar dataKey="bsc" stackId="a" fill="#82ca9d" />}
-        {sidebarOptions.moonriver && (
-          <Bar dataKey="moonriver" stackId="a" fill="red" />
-        )}
-        {sidebarOptions.xdai && <Bar dataKey="xdai" stackId="a" fill="green" />}
-        {sidebarOptions.polygon && (
-          <Bar dataKey="polygon" stackId="a" fill="blue" />
-        )}
-        {sidebarOptions.harmony && (
-          <Bar dataKey="harmony" stackId="a" fill="gray" />
-        )}
-        {sidebarOptions.celo && (
-          <Bar dataKey="celo" stackId="a" fill="tomato" />
-        )}
-        {sidebarOptions.fantom && (
-          <Bar dataKey="fantom" stackId="a" fill="cyan" />
-        )}
-        {sidebarOptions.arbitrum && (
-          <Bar dataKey="arbitrum" stackId="a" fill="#bdbdbd" />
-        )}
+
+        {selectedData?.map((item) => (
+          <Bar dataKey={item.name} stackId="a" fill={item.color} />
+        ))}
       </BarChart>
     </div>
   );

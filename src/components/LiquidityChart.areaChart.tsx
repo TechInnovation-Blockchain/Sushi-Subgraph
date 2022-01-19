@@ -1,16 +1,7 @@
 import React from "react";
-import {
-  Button,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
-import {
-  AreaChart,
-  Area,
-  Legend,
-  Tooltip,
-} from "recharts";
-import {oneMonth, oneWeek} from "../core/timestamps";
+import { Button, Typography, makeStyles } from "@material-ui/core";
+import { AreaChart, Area, Legend, Tooltip } from "recharts";
+import { oneMonth, oneWeek } from "../core/timestamps";
 import { timeFormat } from "d3-time-format";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,11 +32,13 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
 
   if (active && payload && payload.length) {
     return (
-      <div style={{ background: 'gray', padding: '15px', borderRadius: '20px' }}>
+      <div
+        style={{ background: "gray", padding: "15px", borderRadius: "20px" }}
+      >
         {/* <p>{getDate(state[0]?.date)}</p> */}
         {state &&
           state.map((item, index) => (
-            <p key={index} style={{margin: '5px 0'}}>
+            <p key={index} style={{ margin: "5px 0" }}>
               {item.name}: {item.value}
             </p>
           ))}
@@ -59,7 +52,12 @@ const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
 const formatDate = timeFormat("%b %d, '%y");
 const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
 
-export default function LiquidityChart({ sidebarOptions, allData, width, height }) {
+export default function LiquidityChart({
+  sidebarOptions,
+  allData,
+  width,
+  height,
+}) {
   const classes = useStyles();
   const [hoveredData, setHoveredData] = React.useState([]);
   const [updatedData, setUpdatedData] = React.useState(allData);
@@ -74,7 +72,8 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
     allData.harmony === null ||
     allData.celo === null ||
     allData.fantom === null ||
-    allData.arbitrum === null
+    allData.arbitrum === null ||
+    allData.avalanche === null
   ) {
     return (
       <div>
@@ -114,6 +113,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
   const celo = modifyItem("celo");
   const fantom = modifyItem("fantom");
   const arbitrum = modifyItem("arbitrum");
+  const avalanche = modifyItem("avalanche");
 
   const length = [
     ethereum.length,
@@ -125,6 +125,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
     celo.length,
     fantom.length,
     arbitrum.length,
+    avalanche.length,
   ];
   const minLength = Math.min(...length);
   // const maxLength = Math.max(...length);
@@ -139,6 +140,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
     celo: Number(celo[k]?.celo) || 0,
     fantom: Number(fantom[k]?.fantom) || 0,
     arbitrum: Number(arbitrum[k]?.arbitrum) || 0,
+    avalanche: Number(avalanche[k]?.avalanche) || 0,
 
     ethereum_date: ethereum[k]?.ethereum_date || "",
     bsc_date: bsc[k]?.bsc_date || "",
@@ -149,6 +151,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
     celo_date: celo[k]?.celo_date || "",
     fantom_date: fantom[k]?.fantom_date || "",
     arbitrum_date: arbitrum[k]?.arbitrum_date || "",
+    avalanche_date: avalanche[k]?.avalanche || "",
   }));
 
   const [timespan, setTimespan] = React.useState(oneMonth());
@@ -166,7 +169,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
 
   const filterItems = (selectedItem) => {
     return allData?.[selectedItem]?.filter((d) => timespan <= d.date);
-  }
+  };
 
   React.useEffect(() => {
     setUpdatedData({
@@ -180,6 +183,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
       celo: filterItems("celo"),
       fantom: filterItems("fantom"),
       arbitrum: filterItems("arbitrum"),
+      avalanche: filterItems("avalanche"),
     });
   }, [timespan]);
 
@@ -201,7 +205,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
             $4,319,493,164.81
           </Typography> */}
           <Typography variant="subtitle1" color="textSecondary">
-          {hoveredData[0] ? getDate(hoveredData[0]?.date) : ''}
+            {hoveredData[0] ? getDate(hoveredData[0]?.date) : ""}
           </Typography>
         </aside>
 
@@ -259,40 +263,44 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
       >
         <defs>
           <linearGradient id="colorEthereum" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#8884d8" stopOpacity={0} />
+            <stop offset="5%" stopColor="#5f7ae3" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#5f7ae3" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorBsc" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#82ca9d" stopOpacity={0} />
+            <stop offset="5%" stopColor="#e8b611" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#e8b611" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorMoonriver" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="red" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="red" stopOpacity={0} />
+            <stop offset="5%" stopColor="#da1377" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#da1377" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorXdai" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="green" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="green" stopOpacity={0} />
+            <stop offset="5%" stopColor="#10a590" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#10a590" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorPolygon" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="blue" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="blue" stopOpacity={0} />
+            <stop offset="5%" stopColor="#7e46de" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#7e46de" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorHarmony" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="gray" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="gray" stopOpacity={0} />
+            <stop offset="5%" stopColor="#4ddfd7" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#4ddfd7" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorCelo" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="tomato" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="tomato" stopOpacity={0} />
+            <stop offset="5%" stopColor="#f3c559" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#f3c559" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorFantom" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="cyan" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="cyan" stopOpacity={0} />
+            <stop offset="5%" stopColor="#1766f7" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#1766f7" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorArbitrum" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#bdbdbd" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#bdbdbd" stopOpacity={0} />
+            <stop offset="5%" stopColor="#279ce8" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#279ce8" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorAvalanche" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#e24040" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#e24040" stopOpacity={0} />
           </linearGradient>
         </defs>
         <Tooltip
@@ -310,7 +318,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="ethereum"
-            stroke="#8884d8"
+            stroke="#5f7ae3"
             fill="url(#colorEthereum)"
             fillOpacity={1}
           />
@@ -319,7 +327,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="bsc"
-            stroke="#82ca9d"
+            stroke="#e8b611"
             fill="url(#colorBsc)"
             fillOpacity={1}
           />
@@ -328,7 +336,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="moonriver"
-            stroke="red"
+            stroke="#da1377"
             fill="url(#colorMoonriver)"
             fillOpacity={1}
           />
@@ -337,7 +345,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="xdai"
-            stroke="green"
+            stroke="#10a590"
             fill="url(#colorXdai)"
             fillOpacity={1}
           />
@@ -346,7 +354,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="polygon"
-            stroke="blue"
+            stroke="#7e46de"
             fill="url(#colorPolygon)"
             fillOpacity={1}
           />
@@ -355,7 +363,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="harmony"
-            stroke="gray"
+            stroke="#4ddfd7"
             fill="url(#colorHarmony)"
             fillOpacity={1}
           />
@@ -364,7 +372,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="celo"
-            stroke="tomato"
+            stroke="#f3c559"
             fill="url(#colorCelo)"
             fillOpacity={1}
           />
@@ -373,7 +381,7 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="fantom"
-            stroke="cyan"
+            stroke="#1766f7"
             fill="url(#colorFantom)"
             fillOpacity={1}
           />
@@ -382,8 +390,17 @@ export default function LiquidityChart({ sidebarOptions, allData, width, height 
           <Area
             type="monotone"
             dataKey="arbitrum"
-            stroke="#bdbdbd"
+            stroke="#279ce8"
             fill="url(#colorArbitrum)"
+            fillOpacity={1}
+          />
+        )}
+        {sidebarOptions.arbitrum && (
+          <Area
+            type="monotone"
+            dataKey="avalanche"
+            stroke="#e24040"
+            fill="url(#colorAvalanche)"
             fillOpacity={1}
           />
         )}

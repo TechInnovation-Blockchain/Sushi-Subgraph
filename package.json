@@ -1,6 +1,6 @@
 {
   "name": "sushiswap-analytics",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.20",
@@ -54,8 +54,8 @@
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
     "analyze-serve": "serve .next/analyze -p 3002",
-    "dev": "next -p 3001",
-    "dev2": "next dev",
+    "dev": "next dev",
+    "dev2": "next -p 3001",
     "build": "next build",
     "start": "next start"
   },

@@ -85,7 +85,8 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
     allData.harmony === null ||
     allData.celo === null ||
     allData.fantom === null ||
-    allData.arbitrum === null
+    allData.arbitrum === null ||
+    allData.avalanche === null
   ) {
     return (
       <div>
@@ -112,6 +113,7 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
   const celo = modifyItem("celo");
   const fantom = modifyItem("fantom");
   const arbitrum = modifyItem("arbitrum");
+  const avalanche = modifyItem("avalanche");
 
   const length = [
     ethereum.length,
@@ -123,6 +125,7 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
     celo.length,
     fantom.length,
     arbitrum.length,
+    avalanche.length,
   ];
   // const minLength = Math.min(...length);
   const maxLength = Math.max(...length);
@@ -137,6 +140,7 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
     celo: Number(celo[k]?.celo) || 0,
     fantom: Number(fantom[k]?.fantom) || 0,
     arbitrum: Number(arbitrum[k]?.arbitrum) || 0,
+    avalanche: Number(avalanche[k]?.avalanche) || 0,
 
     ethereum_date: ethereum[k]?.ethereum_date || "",
     bsc_date: bsc[k]?.bsc_date || "",
@@ -147,6 +151,7 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
     celo_date: celo[k]?.celo_date || "",
     fantom_date: fantom[k]?.fantom_date || "",
     arbitrum_date: arbitrum[k]?.arbitrum_date || "",
+    avalanche_date: avalanche[k]?.avalanche_date || "",
   }));
 
   const [timespan, setTimespan] = React.useState(oneMonth());
@@ -178,6 +183,7 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
       celo: filterItems("celo"),
       fantom: filterItems("fantom"),
       arbitrum: filterItems("arbitrum"),
+      avalanche: filterItems("avalanche"),
     });
   }, [timespan]);
 
@@ -274,27 +280,32 @@ const LiquidityChart = ({ sidebarOptions, allData, width, height }) => {
         />
         <Legend verticalAlign="top" height={36} />
         {sidebarOptions.ethereum && (
-          <Bar dataKey="ethereum" stackId="a" fill="#8884d8" />
+          <Bar dataKey="ethereum" stackId="a" fill="#5f7ae3" />
         )}
-        {sidebarOptions.bsc && <Bar dataKey="bsc" stackId="a" fill="#82ca9d" />}
+        {sidebarOptions.bsc && <Bar dataKey="bsc" stackId="a" fill="#e8b611" />}
         {sidebarOptions.moonriver && (
-          <Bar dataKey="moonriver" stackId="a" fill="red" />
+          <Bar dataKey="moonriver" stackId="a" fill="#da1377" />
         )}
-        {sidebarOptions.xdai && <Bar dataKey="xdai" stackId="a" fill="green" />}
+        {sidebarOptions.xdai && (
+          <Bar dataKey="xdai" stackId="a" fill="#10a590" />
+        )}
         {sidebarOptions.polygon && (
-          <Bar dataKey="polygon" stackId="a" fill="blue" />
+          <Bar dataKey="polygon" stackId="a" fill="#7e46de" />
         )}
         {sidebarOptions.harmony && (
-          <Bar dataKey="harmony" stackId="a" fill="gray" />
+          <Bar dataKey="harmony" stackId="a" fill="#4ddfd7" />
         )}
         {sidebarOptions.celo && (
-          <Bar dataKey="celo" stackId="a" fill="tomato" />
+          <Bar dataKey="celo" stackId="a" fill="#f3c559" />
         )}
         {sidebarOptions.fantom && (
-          <Bar dataKey="fantom" stackId="a" fill="cyan" />
+          <Bar dataKey="fantom" stackId="a" fill="#1766f7" />
         )}
         {sidebarOptions.arbitrum && (
-          <Bar dataKey="arbitrum" stackId="a" fill="#bdbdbd" />
+          <Bar dataKey="arbitrum" stackId="a" fill="#279ce8" />
+        )}
+        {sidebarOptions.avalanche && (
+          <Bar dataKey="avalanche" stackId="a" fill="#e24040" />
         )}
       </BarChart>
     </div>

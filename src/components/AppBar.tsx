@@ -66,11 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AppBar({
-  onToggleSidebar,
-  open,
-  mobileOpen,
-}) {
+export default function AppBar({ onToggleSidebar, open, mobileOpen }) {
   const classes = useStyles();
   const theme = useTheme();
   const router = useRouter();
@@ -137,8 +133,13 @@ export default function AppBar({
               alignItems="center"
               justifyContent="space-around"
             >
-              <Typography variant="subtitle1" color="textPrimary" noWrap onClick={() => router.push("/")}>
-                Crypto Analytics
+              <Typography
+                variant="subtitle1"
+                color="textPrimary"
+                noWrap
+                onClick={() => router.push("/")}
+              >
+                Sushi Multichain Analytics
               </Typography>
             </Box>
           </Hidden>
