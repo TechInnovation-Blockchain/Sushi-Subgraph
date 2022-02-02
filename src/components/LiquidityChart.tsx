@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography, makeStyles } from "@material-ui/core";
 import { BarChart, Bar, Tooltip, Legend } from "recharts";
-import { oneMonth, oneWeek, numberWithCommas } from "../core";
+import { oneMonth, oneWeek } from "../core";
+import { numberWithCommas } from "core/utils";
 import { timeFormat } from "d3-time-format";
 import { networkItems } from "../data";
 
