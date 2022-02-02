@@ -4,6 +4,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import AppBar from "./AppBar";
 import AppSidebar from "./AppSidebar";
+import AppSidebar2 from "./AppSidebar2";
 import clsx from "clsx";
 
 const drawerWidth = 240;
@@ -75,11 +76,6 @@ function AppShell(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   const onToggleSidebar = () => {
-    // if (!matches) {
-    //   setMobileOpen(!mobileOpen);
-    // } else {
-    //   setOpen(!open);
-    // }
     setOpen(!open);
   };
 
@@ -91,38 +87,28 @@ function AppShell(props) {
         mobileOpen={mobileOpen}
       />
       <nav className={classes.drawer} aria-label="navigation">
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        {/* <Hidden smUp implementation="js">
-          <Drawer
-            container={container}
-            variant="temporary"
-            anchor={"left"}
-            open={mobileOpen}
-            onClose={onToggleSidebar}
-            classes={{
-              paper: classes.drawerPaperMobile,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            <AppNavigation />
-          </Drawer>
-        </Hidden> */}
-        {/* <Hidden xsDown implementation="css"> */}
-          <Drawer
-            className={classes.drawer}
-            variant="persistent"
-            anchor="left"
-            open={open}
-            transitionDuration={0}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            <AppSidebar sidebarOptions={sidebarOptions} setSidebarOptions={setSidebarOptions} />
-          </Drawer>
-        {/* </Hidden> */}
+        <Drawer
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={open}
+          transitionDuration={0}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          {props.sidebar === "1" ? (
+            <AppSidebar
+              sidebarOptions={sidebarOptions}
+              setSidebarOptions={setSidebarOptions}
+            />
+          ) : (
+            <AppSidebar2
+              sidebarOptions={sidebarOptions}
+              setSidebarOptions={setSidebarOptions}
+            />
+          )}
+        </Drawer>
       </nav>
       <main
         className={clsx(classes.content, {

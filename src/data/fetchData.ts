@@ -1,4 +1,3 @@
-import { networkItems } from 'data';
 import {
   ethereum_client,
   bsc_client,
@@ -14,45 +13,47 @@ import {
 import { customDayDatasQuery } from "apollo/queries";
 
 const fetchData = async () => {
-  // TODO: add query on the fetchData function for new network client
-  const ethereum_res = await ethereum_client.query({ query: customDayDatasQuery });
-  const bsc_res = await bsc_client.query({ query: customDayDatasQuery });
-  const moonriver_res = await moonriver_client.query({ query: customDayDatasQuery });
-  const xdai_res = await xdai_client.query({ query: customDayDatasQuery });
-  const polygon_res = await polygon_client.query({ query: customDayDatasQuery });
-  const harmony_res = await harmony_client.query({ query: customDayDatasQuery });
-  const celo_res = await celo_client.query({ query: customDayDatasQuery });
-  const fantom_res = await fantom_client.query({ query: customDayDatasQuery });
-  const arbitrum_res = await arbitrum_client.query({ query: customDayDatasQuery });
-  const avalanche_res = await avalanche_client.query({ query: customDayDatasQuery });
+  const all_client = {
+    ethereum_client: ethereum_client,
+    bsc_client: bsc_client,
+    moonriver_client: moonriver_client,
+    xdai_client: xdai_client,
+    polygon_client: polygon_client,
+    harmony_client: harmony_client,
+    celo_client: celo_client,
+    fantom_client: fantom_client,
+    arbitrum_client: arbitrum_client,
+    avalanche_client: avalanche_client,
+  };
 
+  const res = (client) => all_client[`${client}_client`].query({ query: customDayDatasQuery });
   const getDateArr = (data) => data.map((item) => item.date);
 
-  // TODO: assign variable for new network client
-  const ethereumDate = getDateArr(ethereum_res.data.dayDatas);
-  const bscDate = getDateArr(bsc_res.data.dayDatas);
-  const moonriverDate = getDateArr(moonriver_res.data.dayDatas);
-  const xdaiDate = getDateArr(xdai_res.data.dayDatas);
-  const polygonDate = getDateArr(polygon_res.data.dayDatas);
-  const harmonyDate = getDateArr(harmony_res.data.dayDatas);
-  const celoDate = getDateArr(celo_res.data.dayDatas);
-  const fantomDate = getDateArr(fantom_res.data.dayDatas);
-  const arbitrumDate = getDateArr(arbitrum_res.data.dayDatas);
-  const avalancheDate = getDateArr(avalanche_res.data.dayDatas);
+  // TODO: add query on the fetchData function for new network client
+  const ethereum_res = await res("ethereum");
+  const bsc_res = await res("bsc");
+  const moonriver_res = await res("moonriver");
+  const xdai_res = await res("xdai");
+  const polygon_res = await res("polygon");
+  const harmony_res = await res("harmony");
+  const celo_res = await res("celo");
+  const fantom_res = await res("fantom");
+  const arbitrum_res = await res("arbitrum");
+  const avalanche_res = await res("avalanche");
 
   // TODO: add variable of new network client
   const uniqueArr = Array.from(
     new Set([
-      ...ethereumDate,
-      ...bscDate,
-      ...moonriverDate,
-      ...xdaiDate,
-      ...polygonDate,
-      ...harmonyDate,
-      ...celoDate,
-      ...fantomDate,
-      ...arbitrumDate,
-      ...avalancheDate,
+      ...getDateArr(ethereum_res.data.dayDatas),
+      ...getDateArr(bsc_res.data.dayDatas),
+      ...getDateArr(moonriver_res.data.dayDatas),
+      ...getDateArr(xdai_res.data.dayDatas),
+      ...getDateArr(polygon_res.data.dayDatas),
+      ...getDateArr(harmony_res.data.dayDatas),
+      ...getDateArr(celo_res.data.dayDatas),
+      ...getDateArr(fantom_res.data.dayDatas),
+      ...getDateArr(arbitrum_res.data.dayDatas),
+      ...getDateArr(avalanche_res.data.dayDatas),
     ])
   );
 
@@ -68,30 +69,20 @@ const fetchData = async () => {
       };
     });
   };
-  // TODO: assign variable for new network client's data
-  const ethereumNew = getNewData(ethereum_res.data.dayDatas);
-  const bscNew = getNewData(bsc_res.data.dayDatas);
-  const moonriverNew = getNewData(moonriver_res.data.dayDatas);
-  const xdaiNew = getNewData(xdai_res.data.dayDatas);
-  const polygonNew = getNewData(polygon_res.data.dayDatas);
-  const harmonyNew = getNewData(harmony_res.data.dayDatas);
-  const celoNew = getNewData(celo_res.data.dayDatas);
-  const fantomNew = getNewData(fantom_res.data.dayDatas);
-  const arbitrumNew = getNewData(arbitrum_res.data.dayDatas);
-  const avalancheNew = getNewData(avalanche_res.data.dayDatas);
 
+  // TODO: assign variable for new network client's data
   return {
     ethereum: getNewData(ethereum_res.data.dayDatas),
-    bsc: bscNew,
-    moonriver: moonriverNew,
-    xdai: xdaiNew,
-    polygon: polygonNew,
-    harmony: harmonyNew,
-    celo: celoNew,
-    fantom: fantomNew,
-    arbitrum: arbitrumNew,
-    avalanche: avalancheNew,
-  }
+    bsc: getNewData(bsc_res.data.dayDatas),
+    moonriver: getNewData(moonriver_res.data.dayDatas),
+    xdai: getNewData(xdai_res.data.dayDatas),
+    polygon: getNewData(polygon_res.data.dayDatas),
+    harmony: getNewData(harmony_res.data.dayDatas),
+    celo: getNewData(celo_res.data.dayDatas),
+    fantom: getNewData(fantom_res.data.dayDatas),
+    arbitrum: getNewData(arbitrum_res.data.dayDatas),
+    avalanche: getNewData(avalanche_res.data.dayDatas),
+  };
 };
 
 export default fetchData;

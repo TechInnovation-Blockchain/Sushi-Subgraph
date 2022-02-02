@@ -3,42 +3,39 @@ import React, { useState, useEffect } from "react";
 import { Grid, Paper } from "@material-ui/core";
 import { AppShell, Loading } from "../components";
 import { ParentSize } from "@visx/responsive";
-import LiquidityChart from "components/LiquidityChart";
-import VolumeChart from "components/VolumeChart";
-import { pairsQuery } from "apollo/queries";
-import { ethereum_client } from "apollo/client";
+import LiquidityChartTop10 from "components/LiquidityChartTop10";
+import VolumeChartTop10 from "components/VolumeChartTop10";
+// import VolumeChart from "components/VolumeChart";
 
 // data
-import { fetchData, networkItems } from "data";
+import { fetchData2, networkItems } from "data";
+import updatedDataTop10 from "data/test";
 
-const PAIR_DENY = ["0xb6a741f37d6e455ebcc9f17e2c16d0586c3f57a5"];
-const locales = ["en-US"];
-const currencyFormatter = new Intl.NumberFormat(locales, {
-  style: "currency",
-  currency: "USD",
-  minimumFractionDigits: 2,
-});
-
-const HomePage = () => {
-  const sidebarOptionsCal = {};
+const Top10Page = () => {
+  // const sidebarOptionsCal: any = {};
   const allDataCal = {};
-  networkItems.forEach(({ name, defaultSelected }) => {
-    sidebarOptionsCal[name] = defaultSelected;
-  });
+  // networkItems.forEach(({ name, defaultSelected }) => {
+  //   if (name === "ethereum") {
+  //     sidebarOptionsCal[name] = true;
+  //   } else {
+  //     sidebarOptionsCal[name] = false;
+  //   }
+  // });
   networkItems.forEach(({ name }) => {
     allDataCal[name] = null;
   });
   const [loading, setLoading] = useState(false);
   // TODO: add space for new network client
-  const [totalHeight, setTotalHeight] = useState(550 + 30);
-  const [sidebarOptions, setSidebarOptions] = useState(sidebarOptionsCal);
+  const [totalHeight, setTotalHeight] = useState(660 + 30);
+  const [sidebarOptions, setSidebarOptions] = useState("ethereum");
   const [allData, setAllData] = useState<any>(allDataCal);
 
   useEffect(() => {
     setLoading(true);
     const fetch = async () => {
-      const data = await fetchData();
-      console.log("===== data || index.tsx =====", data);
+      const data = await fetchData2();
+      // const data = updatedDataTop10;
+      // console.log("===== data || top10.tsx =====", data);
 
       setAllData(data);
       setLoading(false);
@@ -46,11 +43,13 @@ const HomePage = () => {
     fetch();
   }, []);
 
+  // console.log("sidebarOptions", sidebarOptions);
+
   return (
     <AppShell
       sidebarOptions={sidebarOptions}
       setSidebarOptions={setSidebarOptions}
-      sidebar="1"
+      sidebar="2"
     >
       <Head>
         <title>Dashboard | Sushi Multichain Analytics</title>
@@ -66,7 +65,7 @@ const HomePage = () => {
                 <Paper variant="outlined" style={{ height: totalHeight }}>
                   <ParentSize>
                     {({ width, height }) => (
-                      <LiquidityChart
+                      <LiquidityChartTop10
                         width={width}
                         height={height}
                         sidebarOptions={sidebarOptions}
@@ -82,7 +81,7 @@ const HomePage = () => {
                 <Paper variant="outlined" style={{ height: totalHeight }}>
                   <ParentSize>
                     {({ width, height }) => (
-                      <VolumeChart
+                      <VolumeChartTop10
                         width={width}
                         height={height}
                         sidebarOptions={sidebarOptions}
@@ -95,17 +94,6 @@ const HomePage = () => {
                 </Paper>
               </Grid>
             </Grid>
-            {/* <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={3}>
-                <Network title="APY (24h)" value={123} format="percent" />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Network title="APY (24h)" value={123} format="percent" />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Network title="APY (24h)" value={123} format="percent" />
-              </Grid>
-            </Grid> */}
           </>
         )
       )}
@@ -113,4 +101,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Top10Page;

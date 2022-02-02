@@ -1,14 +1,12 @@
 import React from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-// import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox, { CheckboxProps } from "@material-ui/core/Checkbox";
 import { grey } from "@material-ui/core/colors";
-// import { ArrowUpward } from "@material-ui/icons";
-// import { IconButton } from "@material-ui/core";
 import { networkItems } from "data";
+import { Radio, RadioGroup } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GreyCheckbox = withStyles({
+const GreyRadio = withStyles({
   root: {
     color: grey[500],
     "&$checked": {
@@ -29,46 +27,41 @@ const GreyCheckbox = withStyles({
     },
   },
   checked: {},
-})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+})((props: CheckboxProps) => <Radio color="default" {...props} />);
 
 export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
   const classes = useStyles();
   const [value, setValue] = React.useState('ethereum');
 
   const handleChange = (event) => {
-    setSidebarOptions({
-      ...sidebarOptions,
-      [event.target.name]: event.target.checked,
-    });
+    setValue(event.target.value);
+    // const abc = sidebarOptions?.map(item => {
+    //   if (item.name === event.target.value) {
+    //     item.defaultSelected = true;
+    //   } else {
+    //     item.defaultSelected = false;
+    //   }
+    //   return item;
+    // })
+    setSidebarOptions(value);
   };
-
-  // TODO: urls for networks
-  // const items = [
-  //   { name: "ethereum", url: "https://analytics.sushi.com" },
-  //   { name: "bsc", url: "https://analytics-bsc.sushi.com" },
-  //   { name: "moonriver", url: "https://analytics-moonriver.sushi.com" },
-  //   { name: "xdai", url: "https://analytics-xdai.sushi.com" },
-  //   { name: "polygon", url: "https://analytics-polygon.sushi.com" },
-  //   { name: "harmony", url: "https://analytics-harmony.sushi.com" },
-  //   { name: "celo", url: "https://analytics-celo.sushi.com" },
-  //   { name: "fantom", url: "https://analytics-fantom.sushi.com" },
-  //   { name: "arbitrum", url: "https://analytics-arbitrum.sushi.com" },
-  //   { name: "avalanche", url: "https://analytics-avalanche.sushi.com" },
-  // ];
 
   return (
     <div className={classes.root}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormGroup>
-          {networkItems.map((item) => (
+
+      <RadioGroup
+        aria-labelledby="demo-controlled-radio-buttons-group"
+        name="controlled-radio-buttons-group"
+        value={value}
+        onChange={handleChange}
+      >
+        {networkItems.map((item) => (
             <FormControlLabel
               key={item.name}
+              value={item.name}
               control={
-                <GreyCheckbox
-                  checked={sidebarOptions[item.name]}
-                  onChange={handleChange}
-                  name={item.name}
-                />
+                <GreyRadio />
               }
               label={
                 <div>
@@ -85,7 +78,10 @@ export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
               }
             />
           ))}
-        </FormGroup>
+
+      </RadioGroup>
+
+          
       </FormControl>
     </div>
   );

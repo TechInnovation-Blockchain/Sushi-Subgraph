@@ -15,16 +15,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const getColor = () => "#" + Math.floor(Math.random() * 16777215).toString(16);
+
 const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
   useEffect(() => {
     if (active && payload && payload.length) {
-      console.log("payload", payload);
+      console.log("payload || LiquidityChartTop10", payload);
       const hoverItem = payload.map((item) => ({
-        name: item.name,
-        date: item.payload[`${item.name}_date`],
-        value: item.value,
+        ...item,
+        date: getDate(item.payload.date),
       }));
-      // console.log("hoverItem", hoverItem);
+      console.log("hoverItem", hoverItem);
       setHoveredData(hoverItem);
     }
   }, [label]);
@@ -36,7 +37,7 @@ const formatDate = timeFormat("%b %d, '%y");
 const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
 
 // main function of the component
-const LiquidityChart = ({
+const VolumeChartTop10 = ({
   sidebarOptions,
   allData,
   width,
@@ -44,53 +45,20 @@ const LiquidityChart = ({
   totalHeight,
   setTotalHeight,
 }) => {
+  // console.log("allData || VolumeChartTop10", allData);
   const classes = useStyles();
-  const [topHeight, setTopHeight] = useState(100);
+  const [topHeight, setTopHeight] = useState(350);
   const [hoveredData, setHoveredData] = useState([]);
-  const [updatedData, setUpdatedData] = useState(allData);
+  const [updatedData, setUpdatedData] = useState(allData[sidebarOptions]);
+  const [selectedData, setSelectedData] = useState([]);
+  const [selectedData2, setSelectedData2] = useState([]);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    setUpdatedData(allData);
-  }, [allData]);
+    setUpdatedData(allData[sidebarOptions]);
+  }, [allData, sidebarOptions]);
 
-  useEffect(() => {
-    let increaseHeight = 30;
-    const len = Object.keys(sidebarOptions)
-      .map((key) => sidebarOptions[key])
-      .filter((item) => item == true).length;
-
-    if (len > 5) {
-      increaseHeight = 25;
-    }
-
-    if (len > 0) {
-      setTotalHeight(350 + increaseHeight * len);
-      setTopHeight(100 + increaseHeight * len);
-    } else {
-      setTotalHeight(350);
-      setTopHeight(100);
-    }
-
-    const filteredData = hoveredData.filter(
-      (item) => sidebarOptions[item.name]
-    );
-    setHoveredData(filteredData);
-  }, [sidebarOptions]);
-
-  // TODO: add condition to check if the data is null
-  if (
-    allData.ethereum === null ||
-    allData.bsc === null ||
-    allData.moonriver === null ||
-    allData.xdai === null ||
-    allData.polygon === null ||
-    allData.harmony === null ||
-    allData.celo === null ||
-    allData.fantom === null ||
-    allData.arbitrum === null ||
-    allData.avalanche === null
-  ) {
+  if (allData[sidebarOptions] === null) {
     return (
       <div>
         <h1>Loading...</h1>
@@ -98,30 +66,67 @@ const LiquidityChart = ({
     );
   }
 
-  // TODO: update data for finalData
-  const finalData = updatedData.ethereum.map((item, i) => ({
-    ethereum: Number(item.liquidityUSD).toFixed(2),
-    bsc: Number(updatedData.bsc[i]?.liquidityUSD).toFixed(2),
-    moonriver: Number(updatedData.moonriver[i]?.liquidityUSD).toFixed(2),
-    xdai: Number(updatedData.xdai[i]?.liquidityUSD).toFixed(2),
-    polygon: Number(updatedData.polygon[i]?.liquidityUSD).toFixed(2),
-    harmony: Number(updatedData.harmony[i]?.liquidityUSD).toFixed(2),
-    celo: Number(updatedData.celo[i]?.liquidityUSD).toFixed(2),
-    fantom: Number(updatedData.fantom[i]?.liquidityUSD).toFixed(2),
-    arbitrum: Number(updatedData.arbitrum[i]?.liquidityUSD).toFixed(2),
-    avalanche: Number(updatedData.avalanche[i]?.liquidityUSD).toFixed(2),
+  const [top10Items, setTop10Items] = useState([
+    { name: "ILV-WETH", color: getColor() },
+    { name: "USDC-WETH", color: getColor() },
+    { name: "OHM-DAI", color: getColor() },
+    { name: "TOKE-WETH", color: getColor() },
+    { name: "WBTC-WETH", color: getColor() },
+    { name: "BIT-WETH", color: getColor() },
+    { name: "WETH-USDT", color: getColor() },
+    { name: "WETH-ALCX", color: getColor() },
+    { name: "DAI-WETH", color: getColor() },
+    { name: "OHM-WETH", color: getColor() },
+  ]);
 
-    ethereum_date: getDate(item.date),
-    bsc_date: getDate(updatedData.bsc[i]?.date),
-    moonriver_date: getDate(updatedData.moonriver[i]?.date),
-    xdai_date: getDate(updatedData.xdai[i]?.date),
-    polygon_date: getDate(updatedData.polygon[i]?.date),
-    harmony_date: getDate(updatedData.harmony[i]?.date),
-    celo_date: getDate(updatedData.celo[i]?.date),
-    fantom_date: getDate(updatedData.fantom[i]?.date),
-    arbitrum_date: getDate(updatedData.arbitrum[i]?.date),
-    avalanche_date: getDate(updatedData.avalanche[i]?.date),
-  }));
+  useEffect(() => {
+    const separate = updatedData?.map((item) =>
+      item?.dayData.map((_item) => ({
+        name: item.name,
+        value: Number(Number(_item.volumeUSD).toFixed(2)),
+        date: _item.date,
+      }))
+    );
+
+    setTop10Items([
+      { name: separate[0][0]?.name, color: getColor() },
+      { name: separate[1][0]?.name, color: getColor() },
+      { name: separate[2][0]?.name, color: getColor() },
+      { name: separate[3][0]?.name, color: getColor() },
+      { name: separate[4][0]?.name, color: getColor() },
+      { name: separate[5][0]?.name, color: getColor() },
+      { name: separate[6][0]?.name, color: getColor() },
+      { name: separate[7][0]?.name, color: getColor() },
+      { name: separate[8][0]?.name, color: getColor() },
+      { name: separate[9][0]?.name, color: getColor() },
+    ]);
+
+    const result = separate[0]?.map((_, i) => ({
+      [separate[0][i]?.name]: separate[0][i]?.value || 0,
+      [separate[1][i]?.name]: separate[1][i]?.value || 0,
+      [separate[2][i]?.name]: separate[2][i]?.value || 0,
+      [separate[3][i]?.name]: separate[3][i]?.value || 0,
+      [separate[4][i]?.name]: separate[4][i]?.value || 0,
+      [separate[5][i]?.name]: separate[5][i]?.value || 0,
+      [separate[6][i]?.name]: separate[6][i]?.value || 0,
+      [separate[7][i]?.name]: separate[7][i]?.value || 0,
+      [separate[8][i]?.name]: separate[8][i]?.value || 0,
+      [separate[9][i]?.name]: separate[9][i]?.value || 0,
+
+      date: separate[0][i]?.date || null,
+    }));
+
+    const _new = [...Array(10).keys()].map((_, i) => {
+      return {
+        name: separate[i][0]?.name,
+        value: separate[i][0]?.value,
+        date: getDate(separate[i][0]?.date),
+      };
+    });
+
+    setHoveredData(_new);
+    setSelectedData(result.reverse());
+  }, [updatedData]);
 
   const [timespan, setTimespan] = useState(oneMonth());
 
@@ -136,68 +141,38 @@ const LiquidityChart = ({
     }
   }
 
-  const filterItems = (selectedItem) => {
-    return allData?.[selectedItem]?.filter((d) => timespan <= d.date);
-  };
-
-  const lastData = finalData[finalData.length - 1];
-  const firstTimeHoveredData = [];
-  const sidebarOptionsKeys = Object.keys(sidebarOptions);
-
-  sidebarOptionsKeys.forEach((key) => {
-    if (sidebarOptions[key]) {
-      firstTimeHoveredData.push({
-        name: key,
-        date: lastData[`${key}_date`],
-        value: lastData[key],
-      });
-    }
-  });
-
-  useEffect(() => {
-    const newData = {};
-
-    networkItems.forEach((item) => {
-      newData[item.name] = filterItems(item.name);
-    });
-
-    setUpdatedData(newData);
-  }, [timespan]);
-
   useEffect(() => {
     let _hoveredData = hoveredData;
-    if (_hoveredData.length === 0) {
-      _hoveredData = firstTimeHoveredData;
-    }
     const totalOfValues = _hoveredData?.reduce(
       (acc, curr) => acc + Number(curr.value),
       0
     );
-    setHoveredData(_hoveredData);
     setTotal(totalOfValues);
   }, [hoveredData]);
 
-  const selectedData = networkItems.filter(
-    (item) => sidebarOptions[item.name] === true
-  );
-
-  console.log("finalData", finalData);
-  console.log("selectedData", selectedData);
+  useEffect(() => {
+    const newData = selectedData?.filter((d) => timespan <= d.date);
+    // console.log("timespan update", { updatedData, selectedData, newData });
+    setSelectedData2(newData.length > 0 ? newData : selectedData);
+  }, [timespan, selectedData]);
 
   return (
     <div>
       <div
         style={{
           height: topHeight + "px",
-          // height: "300px",
           padding: "24px",
           display: "flex",
           justifyContent: "space-between",
         }}
       >
         <aside>
-          <Typography variant="subtitle2" color="textSecondary">
-            Liquidity
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            style={{ textTransform: "capitalize" }}
+          >
+            {sidebarOptions} Volume
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
             {hoveredData[0] ? hoveredData[0]?.date : ""}
@@ -257,8 +232,7 @@ const LiquidityChart = ({
       <BarChart
         width={width}
         height={totalHeight - topHeight}
-        // height={height - 100}
-        data={finalData}
+        data={selectedData2}
         margin={{
           top: 10,
           right: 0,
@@ -276,9 +250,9 @@ const LiquidityChart = ({
             />
           }
         />
-        <Legend verticalAlign="bottom" align="left" height={36 + 30} />
+        <Legend verticalAlign="bottom" align="left" height={90} />
 
-        {selectedData?.map((item) => (
+        {top10Items?.map((item) => (
           <Bar dataKey={item.name} stackId="a" fill={item.color} />
         ))}
       </BarChart>
@@ -286,4 +260,4 @@ const LiquidityChart = ({
   );
 };
 
-export default LiquidityChart;
+export default VolumeChartTop10;

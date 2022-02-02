@@ -36,7 +36,7 @@ const formatDate = timeFormat("%b %d, '%y");
 const getDate = (timestamps) => formatDate(new Date(timestamps * 1000));
 
 // main function of the component
-const LiquidityChart = ({
+const LiquidityChartTest = ({
   sidebarOptions,
   allData,
   width,
@@ -79,18 +79,7 @@ const LiquidityChart = ({
   }, [sidebarOptions]);
 
   // TODO: add condition to check if the data is null
-  if (
-    allData.ethereum === null ||
-    allData.bsc === null ||
-    allData.moonriver === null ||
-    allData.xdai === null ||
-    allData.polygon === null ||
-    allData.harmony === null ||
-    allData.celo === null ||
-    allData.fantom === null ||
-    allData.arbitrum === null ||
-    allData.avalanche === null
-  ) {
+  if (updatedData.length === 0) {
     return (
       <div>
         <h1>Loading...</h1>
@@ -99,29 +88,25 @@ const LiquidityChart = ({
   }
 
   // TODO: update data for finalData
-  const finalData = updatedData.ethereum.map((item, i) => ({
-    ethereum: Number(item.liquidityUSD).toFixed(2),
-    bsc: Number(updatedData.bsc[i]?.liquidityUSD).toFixed(2),
-    moonriver: Number(updatedData.moonriver[i]?.liquidityUSD).toFixed(2),
-    xdai: Number(updatedData.xdai[i]?.liquidityUSD).toFixed(2),
-    polygon: Number(updatedData.polygon[i]?.liquidityUSD).toFixed(2),
-    harmony: Number(updatedData.harmony[i]?.liquidityUSD).toFixed(2),
-    celo: Number(updatedData.celo[i]?.liquidityUSD).toFixed(2),
-    fantom: Number(updatedData.fantom[i]?.liquidityUSD).toFixed(2),
-    arbitrum: Number(updatedData.arbitrum[i]?.liquidityUSD).toFixed(2),
-    avalanche: Number(updatedData.avalanche[i]?.liquidityUSD).toFixed(2),
+  // const finalData = updatedData?.ethereum?.map((item, i) => ({
+  //   ethereum: Number(item.liquidity).toFixed(2),
 
-    ethereum_date: getDate(item.date),
-    bsc_date: getDate(updatedData.bsc[i]?.date),
-    moonriver_date: getDate(updatedData.moonriver[i]?.date),
-    xdai_date: getDate(updatedData.xdai[i]?.date),
-    polygon_date: getDate(updatedData.polygon[i]?.date),
-    harmony_date: getDate(updatedData.harmony[i]?.date),
-    celo_date: getDate(updatedData.celo[i]?.date),
-    fantom_date: getDate(updatedData.fantom[i]?.date),
-    arbitrum_date: getDate(updatedData.arbitrum[i]?.date),
-    avalanche_date: getDate(updatedData.avalanche[i]?.date),
+  //   ethereum_date: getDate(item.date),
+  // }));
+
+  // const finalData = [
+  //   {
+  //     ethereum: Number(updatedData[0]?.ethereum?.liquidity).toFixed(2),
+  //     ethereum_date: getDate(updatedData[0]?.ethereum.date)
+  //   }
+  // ]
+  console.log("updatedData", updatedData);
+  const finalData = updatedData?.map((item, i) => ({
+    ethereum: item.ethereum.liquidity,
+    name: item.ethereum.name,
+    ethereum_date: getDate(item.ethereum.date),
   }));
+  console.log("finalData", finalData);
 
   const [timespan, setTimespan] = useState(oneMonth());
 
@@ -166,9 +151,9 @@ const LiquidityChart = ({
 
   useEffect(() => {
     let _hoveredData = hoveredData;
-    if (_hoveredData.length === 0) {
-      _hoveredData = firstTimeHoveredData;
-    }
+    // if (_hoveredData.length === 0) {
+    //   _hoveredData = firstTimeHoveredData;
+    // }
     const totalOfValues = _hoveredData?.reduce(
       (acc, curr) => acc + Number(curr.value),
       0
@@ -181,8 +166,7 @@ const LiquidityChart = ({
     (item) => sidebarOptions[item.name] === true
   );
 
-  console.log("finalData", finalData);
-  console.log("selectedData", selectedData);
+  
 
   return (
     <div>
@@ -266,7 +250,7 @@ const LiquidityChart = ({
           bottom: 0,
         }}
       >
-        <Tooltip
+        {/* <Tooltip
           content={
             <CustomTooltip
               setHoveredData={setHoveredData}
@@ -275,15 +259,16 @@ const LiquidityChart = ({
               label={undefined}
             />
           }
-        />
+        /> */}
         <Legend verticalAlign="bottom" align="left" height={36 + 30} />
 
-        {selectedData?.map((item) => (
+        {/* {selectedData?.map((item) => (
           <Bar dataKey={item.name} stackId="a" fill={item.color} />
-        ))}
+        ))} */}
+        <Bar dataKey="ethereum" stackId="a" fill="#bdbdbd" />
       </BarChart>
     </div>
   );
 };
 
-export default LiquidityChart;
+export default LiquidityChartTest;
