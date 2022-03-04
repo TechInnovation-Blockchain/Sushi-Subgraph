@@ -72,17 +72,17 @@ function AppShell(props) {
 
   const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+  // const container =
+  //   window !== undefined ? () => window().document.body : undefined;
 
-  const onToggleSidebar = () => {
-    setOpen(!open);
-  };
+  // const onToggleSidebar = () => setOpen(!open);
+
+  // console.log("sidebarOptions || AppShell", sidebarOptions);
 
   return (
     <div className={classes.root}>
       <AppBar
-        onToggleSidebar={onToggleSidebar}
+        onToggleSidebar={() => setOpen(!open)}
         open={open}
         mobileOpen={mobileOpen}
       />

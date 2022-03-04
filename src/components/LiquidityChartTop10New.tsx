@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Button, Typography, makeStyles } from "@material-ui/core";
+import {
+  Button,
+  Typography,
+  makeStyles,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
 import { BarChart, Bar, Tooltip, Legend } from "recharts";
 import { oneMonth, oneWeek } from "../core";
 import { numberWithCommas } from "core/utils";
 import { timeFormat } from "d3-time-format";
-import { networkItems } from "../data";
 
 const useStyles = makeStyles((theme) => ({
   filter: {
@@ -13,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("md")]: {
       flexDirection: "row",
     },
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   },
 }));
 
@@ -46,19 +57,43 @@ const LiquidityChartTop10 = ({
   totalHeight,
   setTotalHeight,
 }) => {
+  const mainData = allData;
   // console.log("allData || LiquidityChartTop10", allData);
   const classes = useStyles();
   const [topHeight, setTopHeight] = useState(350);
   const [hoveredData, setHoveredData] = useState([]);
-  const [updatedData, setUpdatedData] = useState(allData[sidebarOptions]);
+  const [selectTime, setSelectTime] = useState("");
+  const [updatedData, setUpdatedData] = useState(
+    mainData[sidebarOptions][0]?.data
+  );
   const [selectedData, setSelectedData] = useState([]);
   const [selectedData2, setSelectedData2] = useState([]);
   const [total, setTotal] = useState(0);
+  const [times, setTimes] = useState([]);
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectTime(event.target.value as string);
+  };
 
   useEffect(() => {
-    // console.log("sidebarOptions || LiquidityChartTop10", sidebarOptions);
-    setUpdatedData(allData[sidebarOptions]);
-  }, [allData, sidebarOptions]);
+    // console.log("mainData[sidebarOptions] || LiquidityChartTop10", mainData[sidebarOptions]);
+
+    const _times = mainData[sidebarOptions]?.map(({ time }) => {
+      // console.log("time || LiquidityChartTop10", time);
+      // const _time = time[1].split("T")[0];
+      const monthName = new Date(time[1]).toLocaleString("default", {
+        month: "long",
+      });
+      // return _time.split("-")[0] + ", " + monthName;
+      return time[1].toString().split(" ")[3] + ", " + monthName;
+      // return monthName;
+    });
+    const idx =
+      _times.indexOf(selectTime) !== -1 ? _times.indexOf(selectTime) : 0;
+    setTimes(_times);
+    setUpdatedData(mainData[sidebarOptions][idx]?.data);
+    setSelectTime(_times[idx]);
+  }, [mainData, sidebarOptions, selectTime]);
 
   // useEffect(() => {
   //   const filteredData = hoveredData.filter(
@@ -67,7 +102,7 @@ const LiquidityChartTop10 = ({
   //   setHoveredData(filteredData);
   // }, [sidebarOptions]);
 
-  if (allData[sidebarOptions] === null) {
+  if (mainData[sidebarOptions][0]?.data === null) {
     return (
       <div>
         <h1>Loading...</h1>
@@ -76,19 +111,20 @@ const LiquidityChartTop10 = ({
   }
 
   const [top10Items, setTop10Items] = useState([
-    { name: "ILV-WETH", color: getColor() },
-    { name: "USDC-WETH", color: getColor() },
-    { name: "OHM-DAI", color: getColor() },
-    { name: "TOKE-WETH", color: getColor() },
-    { name: "WBTC-WETH", color: getColor() },
-    { name: "BIT-WETH", color: getColor() },
-    { name: "WETH-USDT", color: getColor() },
-    { name: "WETH-ALCX", color: getColor() },
-    { name: "DAI-WETH", color: getColor() },
-    { name: "OHM-WETH", color: getColor() },
+    // { name: "ILV-WETH", color: getColor() },
+    // { name: "USDC-WETH", color: getColor() },
+    // { name: "OHM-DAI", color: getColor() },
+    // { name: "TOKE-WETH", color: getColor() },
+    // { name: "WBTC-WETH", color: getColor() },
+    // { name: "BIT-WETH", color: getColor() },
+    // { name: "WETH-USDT", color: getColor() },
+    // { name: "WETH-ALCX", color: getColor() },
+    // { name: "DAI-WETH", color: getColor() },
+    // { name: "OHM-WETH", color: getColor() },
   ]);
 
   useEffect(() => {
+    // console.log("updatedData || LiquidityChartTop10", updatedData);
     const separate = updatedData?.map((item) =>
       item?.dayData.map((_item) => ({
         name: item.name,
@@ -100,44 +136,44 @@ const LiquidityChartTop10 = ({
     // console.log("separate", separate);
 
     setTop10Items([
-      { name: separate[0][0]?.name, color: getColor() },
-      { name: separate[1][0]?.name, color: getColor() },
-      { name: separate[2][0]?.name, color: getColor() },
-      { name: separate[3][0]?.name, color: getColor() },
-      { name: separate[4][0]?.name, color: getColor() },
-      { name: separate[5][0]?.name, color: getColor() },
-      { name: separate[6][0]?.name, color: getColor() },
-      { name: separate[7][0]?.name, color: getColor() },
-      { name: separate[8][0]?.name, color: getColor() },
-      { name: separate[9][0]?.name, color: getColor() },
+      { name: separate[0] ? separate[0][0]?.name : '', color: getColor() },
+      { name: separate[1] ? separate[1][0]?.name : '', color: getColor() },
+      { name: separate[2] ? separate[2][0]?.name : '', color: getColor() },
+      { name: separate[3] ? separate[3][0]?.name : '', color: getColor() },
+      { name: separate[4] ? separate[4][0]?.name : '', color: getColor() },
+      { name: separate[5] ? separate[5][0]?.name : '', color: getColor() },
+      { name: separate[6] ? separate[6][0]?.name : '', color: getColor() },
+      { name: separate[7] ? separate[7][0]?.name : '', color: getColor() },
+      { name: separate[8] ? separate[8][0]?.name : '', color: getColor() },
+      { name: separate[9] ? separate[9][0]?.name : '', color: getColor() },
     ]);
 
     const result = separate[0]?.map((_, i) => ({
-      [separate[0][i]?.name]: separate[0][i]?.value || 0,
-      [separate[1][i]?.name]: separate[1][i]?.value || 0,
-      [separate[2][i]?.name]: separate[2][i]?.value || 0,
-      [separate[3][i]?.name]: separate[3][i]?.value || 0,
-      [separate[4][i]?.name]: separate[4][i]?.value || 0,
-      [separate[5][i]?.name]: separate[5][i]?.value || 0,
-      [separate[6][i]?.name]: separate[6][i]?.value || 0,
-      [separate[7][i]?.name]: separate[7][i]?.value || 0,
-      [separate[8][i]?.name]: separate[8][i]?.value || 0,
-      [separate[9][i]?.name]: separate[9][i]?.value || 0,
-
-      date: separate[0][i]?.date || null,
+      [separate[0] && separate[0][i]?.name]: separate[0] && separate[0][i]?.value || 0,
+      [separate[1] && separate[1][i]?.name]: separate[1] && separate[1][i]?.value || 0,
+      [separate[2] && separate[2][i]?.name]: separate[2] && separate[2][i]?.value || 0,
+      [separate[3] && separate[3][i]?.name]: separate[3] && separate[3][i]?.value || 0,
+      [separate[4] && separate[4][i]?.name]: separate[4] && separate[4][i]?.value || 0,
+      [separate[5] && separate[5][i]?.name]: separate[5] && separate[5][i]?.value || 0,
+      [separate[6] && separate[6][i]?.name]: separate[6] && separate[6][i]?.value || 0,
+      [separate[7] && separate[7][i]?.name]: separate[7] && separate[7][i]?.value || 0,
+      [separate[8] && separate[8][i]?.name]: separate[8] && separate[8][i]?.value || 0,
+      [separate[9] && separate[9][i]?.name]: separate[9] && separate[9][i]?.value || 0,
+      date: separate[0] && separate[0][i]?.date || null,
     }));
 
     const _new = [...Array(10).keys()].map((_, i) => {
+      // const _new = [...Array(separate[0] ? separate[0].length : 0).keys()].map((_, i) => {
       return {
-        name: separate[i][0]?.name,
-        value: separate[i][0]?.value,
-        date: getDate(separate[i][0]?.date),
+        name: separate[i] ? separate[i][0]?.name : '',
+        value: separate[i] ? separate[i][0]?.value : '',
+        date: separate[i] ? getDate(separate[i][0]?.date) : '',
       };
     });
 
     setHoveredData(_new);
-    setSelectedData(result.reverse());
-  }, [updatedData]);
+    setSelectedData(result ? result.reverse() : []);
+  }, [updatedData, selectTime]);
 
   const [timespan, setTimespan] = useState(oneMonth());
 
@@ -152,9 +188,11 @@ const LiquidityChartTop10 = ({
     }
   }
 
-  const filterItems = (selectedItem) => {
-    return allData?.[selectedItem]?.dayData?.filter((d) => timespan <= d.date);
-  };
+  // useEffect(() => {}, []);
+
+  // const filterItems = (selectedItem) => {
+  //   return allData?.[selectedItem][0]?.data[0]?.dayData?.filter((d) => timespan <= d.date);
+  // };
 
   // const lastData = finalData[finalData.length - 1];
   // const firstTimeHoveredData = [];
@@ -186,7 +224,7 @@ const LiquidityChartTop10 = ({
     //   _hoveredData = firstTimeHoveredData;
     // }
     const totalOfValues = _hoveredData?.reduce(
-      (acc, curr) => acc + Number(curr.value),
+      (acc, curr) => acc + Number(curr.value || 0),
       0
     );
     // setHoveredData(_hoveredData);
@@ -229,53 +267,47 @@ const LiquidityChartTop10 = ({
             color="textPrimary"
             style={{ margin: "10px 0" }}
           >
-            {"$" + numberWithCommas(Number(total.toFixed(2)))}
+            {"$" + numberWithCommas(Number(total.toFixed(2) || 0))}
           </Typography>
           {hoveredData?.map((item, index) => (
-            <Typography variant="subtitle2" color="textSecondary" key={index}>
-              {item.name}: {"$" + numberWithCommas(item.value)}
-            </Typography>
+            <>
+              {item.name?.length > 0 && (
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  key={index}
+                >
+                  {item.name}: {"$" + numberWithCommas(item.value || 0)}
+                </Typography>
+              )}
+            </>
           ))}
         </aside>
 
         <aside>
           <div className={classes.filter}>
-            <Button
-              type="button"
-              value="1W"
-              aria-label="1 week timespan"
-              variant="text"
-              size="small"
-              style={{ color: "gray" }}
-              onClick={onTimespanChange}
-            >
-              1W
-            </Button>
-            <Button
-              type="button"
-              value="1M"
-              aria-label="1 month timespan"
-              variant="text"
-              size="small"
-              style={{ color: "gray" }}
-              onClick={onTimespanChange}
-            >
-              1M
-            </Button>
-            <Button
-              type="button"
-              value="ALL"
-              aria-label="ALL timespan"
-              variant="text"
-              size="small"
-              style={{ color: "gray" }}
-              onClick={onTimespanChange}
-            >
-              ALL
-            </Button>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel id="demo-simple-select-outlined-label">
+                Month
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={selectTime}
+                onChange={handleChange}
+                label="Month"
+              >
+                {times?.map((time, i) => (
+                  <MenuItem key={i} value={time}>
+                    {time}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
         </aside>
       </div>
+
       <BarChart
         width={width}
         height={totalHeight - topHeight}

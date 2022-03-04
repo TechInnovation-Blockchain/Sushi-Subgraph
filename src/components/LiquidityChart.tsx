@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
   useEffect(() => {
     if (active && payload && payload.length) {
-      console.log("payload", payload);
+      // console.log("payload", payload);
       const hoverItem = payload.map((item) => ({
         name: item.name,
         date: item.payload[`${item.name}_date`],
@@ -182,8 +182,8 @@ const LiquidityChart = ({
     (item) => sidebarOptions[item.name] === true
   );
 
-  console.log("finalData", finalData);
-  console.log("selectedData", selectedData);
+  // console.log("finalData", finalData);
+  // console.log("selectedData", selectedData);
 
   return (
     <div>

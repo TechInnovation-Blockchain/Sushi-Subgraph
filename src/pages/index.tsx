@@ -38,7 +38,7 @@ const HomePage = () => {
     setLoading(true);
     const fetch = async () => {
       const data = await fetchData();
-      console.log("===== data || index.tsx =====", data);
+      // console.log("===== data || index.tsx =====", data);
 
       setAllData(data);
       setLoading(false);

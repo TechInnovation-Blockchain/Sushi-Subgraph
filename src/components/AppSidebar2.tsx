@@ -6,7 +6,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox, { CheckboxProps } from "@material-ui/core/Checkbox";
 import { grey } from "@material-ui/core/colors";
 import { networkItems } from "data";
-import { Radio, RadioGroup } from "@material-ui/core";
+import { Radio, RadioGroup, RadioProps } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,13 +27,14 @@ const GreyRadio = withStyles({
     },
   },
   checked: {},
-})((props: CheckboxProps) => <Radio color="default" {...props} />);
+})((props: RadioProps) => <Radio color="default" {...props} />);
 
 export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
   const classes = useStyles();
   const [value, setValue] = React.useState('ethereum');
 
   const handleChange = (event) => {
+    // console.log("sidebarOptions || AppSidebar", sidebarOptions);
     setValue(event.target.value);
     // const abc = sidebarOptions?.map(item => {
     //   if (item.name === event.target.value) {
@@ -43,7 +44,8 @@ export default function AppSidebar({ sidebarOptions, setSidebarOptions }) {
     //   }
     //   return item;
     // })
-    setSidebarOptions(value);
+    // setSidebarOptions(value);
+    setSidebarOptions(event.target.value);
   };
 
   return (

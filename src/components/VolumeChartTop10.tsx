@@ -4,7 +4,6 @@ import { BarChart, Bar, Tooltip, Legend } from "recharts";
 import { oneMonth, oneWeek } from "../core";
 import { numberWithCommas } from "core/utils";
 import { timeFormat } from "d3-time-format";
-import { networkItems } from "../data";
 
 const useStyles = makeStyles((theme) => ({
   filter: {
@@ -21,12 +20,12 @@ const getColor = () => "#" + Math.floor(Math.random() * 16777215).toString(16);
 const CustomTooltip = ({ active, payload, label, setHoveredData }) => {
   useEffect(() => {
     if (active && payload && payload.length) {
-      console.log("payload || LiquidityChartTop10", payload);
+      // console.log("payload || LiquidityChartTop10", payload);
       const hoverItem = payload.map((item) => ({
         ...item,
         date: getDate(item.payload.date),
       }));
-      console.log("hoverItem", hoverItem);
+      // console.log("hoverItem", hoverItem);
       setHoveredData(hoverItem);
     }
   }, [label]);

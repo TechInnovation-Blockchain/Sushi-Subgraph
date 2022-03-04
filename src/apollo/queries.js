@@ -114,15 +114,48 @@ export const pairsQuery = gql`
   ) {
     pairs(first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
       name
-      dayData(orderBy: date, orderDirection: desc){
+      dayData(orderBy: date, orderDirection: desc) {
         volumeUSD
         reserveUSD
         date
       }
-      token0{
+      token0 {
         symbol
       }
-      token1{
+      token1 {
+        symbol
+      }
+    }
+  }
+  ${pairFieldsQuery}
+`;
+
+export const pairsQueryByMonth = (gte=1640995200, lte=1643673599) => gql`
+  query pairsQuery(
+    $first: Int! = 10
+    $gte: Int! = ${gte}
+    $lte: Int! = ${lte}
+    $orderBy: String! = "reserveUSD"
+    $orderDirection: String! = "desc"
+  ) {
+    pairs(
+      first: $first
+      where: { timestamp_gte: $gte, timestamp_lte: $lte }
+    ) {
+      name
+      dayData(
+        orderBy: date
+        orderDirection: desc
+        where: { date_gte: $gte, date_lte: $lte }
+      ) {
+        volumeUSD
+        reserveUSD
+        date
+      }
+      token0 {
+        symbol
+      }
+      token1 {
         symbol
       }
     }

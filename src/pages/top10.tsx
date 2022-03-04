@@ -3,24 +3,16 @@ import React, { useState, useEffect } from "react";
 import { Grid, Paper } from "@material-ui/core";
 import { AppShell, Loading } from "../components";
 import { ParentSize } from "@visx/responsive";
-import LiquidityChartTop10 from "components/LiquidityChartTop10";
-import VolumeChartTop10 from "components/VolumeChartTop10";
-// import VolumeChart from "components/VolumeChart";
+import LiquidityChartTop10 from "components/LiquidityChartTop10New";
+import VolumeChartTop10 from "components/VolumeChartTop10New";
 
 // data
 import { fetchData2, networkItems } from "data";
-import updatedDataTop10 from "data/test";
+// import localData from 'data/test';
 
 const Top10Page = () => {
-  // const sidebarOptionsCal: any = {};
   const allDataCal = {};
-  // networkItems.forEach(({ name, defaultSelected }) => {
-  //   if (name === "ethereum") {
-  //     sidebarOptionsCal[name] = true;
-  //   } else {
-  //     sidebarOptionsCal[name] = false;
-  //   }
-  // });
+
   networkItems.forEach(({ name }) => {
     allDataCal[name] = null;
   });
@@ -33,9 +25,9 @@ const Top10Page = () => {
   useEffect(() => {
     setLoading(true);
     const fetch = async () => {
-      const data = await fetchData2();
-      // const data = updatedDataTop10;
-      // console.log("===== data || top10.tsx =====", data);
+      const data:any = await fetchData2();
+      // const data:any = localData;
+      console.log("===== data || top10.tsx =====", data);
 
       setAllData(data);
       setLoading(false);
@@ -43,7 +35,7 @@ const Top10Page = () => {
     fetch();
   }, []);
 
-  // console.log("sidebarOptions", sidebarOptions);
+  // console.log("sidebarOptions || Top10Page", sidebarOptions);
 
   return (
     <AppShell
